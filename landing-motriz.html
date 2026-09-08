@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Motriz — máquina previsível de aquisição: conteúdo com IA e agente de WhatsApp que qualifica e fecha leads.">
+<style>
+  :root{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>Motriz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+</head>
+<body>
+
+<style>
+/* ---------- tokens: tema claro completo ---------- */
+:root{
+  --paper:#E4E8E7;
+  --paper-2:#D7DDDC;
+  --card:#FAFBFA;
+  --field:#EDF0EF;
+  --ink:#0E1A1B;
+  --ink-2:#516467;
+  --ink-3:#7B8C8E;
+  --rule:#C6CFCE;
+  --rule-2:#AEBAB9;
+  --petrol:#0B5E5E;
+  --petrol-soft:rgba(11,94,94,.09);
+  --signal:#C7411D;
+  --signal-ink:#FFFFFF;
+  --signal-soft:rgba(199,65,29,.10);
+  --lift:0 1px 0 rgba(14,26,27,.03), 0 22px 44px -30px rgba(14,26,27,.45);
+  --grid-line:rgba(14,26,27,.045);
+
+  --step:clamp(4px,.5vw,6px);
+  --shell:1200px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0B1413;
+    --paper-2:#070E0E;
+    --card:#111D1C;
+    --field:#0B1817;
+    --ink:#E7EEEC;
+    --ink-2:#93A6A4;
+    --ink-3:#6E8382;
+    --rule:#213130;
+    --rule-2:#2E4341;
+    --petrol:#5AD2C6;
+    --petrol-soft:rgba(90,210,198,.12);
+    --signal:#FF7A4D;
+    --signal-ink:#15100D;
+    --signal-soft:rgba(255,122,77,.14);
+    --lift:0 1px 0 rgba(255,255,255,.03), 0 26px 50px -30px rgba(0,0,0,.8);
+    --grid-line:rgba(231,238,236,.05);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0B1413;
+  --paper-2:#070E0E;
+  --card:#111D1C;
+  --field:#0B1817;
+  --ink:#E7EEEC;
+  --ink-2:#93A6A4;
+  --ink-3:#6E8382;
+  --rule:#213130;
+  --rule-2:#2E4341;
+  --petrol:#5AD2C6;
+  --petrol-soft:rgba(90,210,198,.12);
+  --signal:#FF7A4D;
+  --signal-ink:#15100D;
+  --signal-soft:rgba(255,122,77,.14);
+  --lift:0 1px 0 rgba(255,255,255,.03), 0 26px 50px -30px rgba(0,0,0,.8);
+  --grid-line:rgba(231,238,236,.05);
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background-image:
+    repeating-linear-gradient(to right,var(--grid-line) 0 1px,transparent 1px 34px),
+    repeating-linear-gradient(to bottom,var(--grid-line) 0 1px,transparent 1px 34px);
+  -webkit-mask-image:radial-gradient(120% 90% at 68% 0%,#000 0%,rgba(0,0,0,.25) 62%,transparent 100%);
+  mask-image:radial-gradient(120% 90% at 68% 0%,#000 0%,rgba(0,0,0,.25) 62%,transparent 100%);
+}
+.shell{position:relative;z-index:1;max-width:var(--shell);margin:0 auto;padding:0 clamp(20px,4vw,44px)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--petrol);outline-offset:3px;border-radius:2px}
+
+.mono{
+  font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+
+/* ---------- faixa superior / régua ---------- */
+.strip{display:flex;align-items:flex-end;gap:clamp(16px,3vw,32px);padding:22px 0 0}
+.lockup{display:flex;align-items:center;gap:9px;flex:none;padding-bottom:2px}
+.mark{width:22px;height:22px;color:var(--petrol);flex:none}
+.wordmark{
+  font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;
+  font-weight:800;font-size:17px;letter-spacing:-.01em;
+}
+.ruler{
+  flex:1;height:11px;min-width:40px;
+  background-image:
+    repeating-linear-gradient(to right,var(--rule-2) 0 1px,transparent 1px 9px),
+    repeating-linear-gradient(to right,var(--ink-3) 0 1px,transparent 1px 45px);
+  background-size:100% 5px,100% 11px;
+  background-position:left bottom,left bottom;
+  background-repeat:repeat-x;
+  opacity:.75;
+}
+.strip .mono{color:var(--ink-3);flex:none;padding-bottom:1px}
+
+/* ---------- hero ---------- */
+.hero{
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(340px,398px);
+  gap:clamp(32px,5vw,72px);
+  align-items:start;
+  padding:clamp(44px,7vw,84px) 0 clamp(40px,6vw,64px);
+}
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--petrol);margin-bottom:22px}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--rule);max-width:120px}
+
+h1{
+  font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;
+  font-weight:700;
+  font-size:clamp(34px,5.1vw,60px);
+  line-height:1.02;
+  letter-spacing:-.028em;
+  text-wrap:balance;
+  margin:0 0 26px;
+  max-width:16em;
+}
+h1 .thesis{color:var(--petrol);display:block}
+h1 .stress{
+  color:var(--signal);
+  background:linear-gradient(to top,var(--signal-soft) 0 .30em,transparent .30em);
+  padding:0 .04em;
+}
+
+.sub{max-width:34em;margin:0;display:grid;gap:2px}
+.sub span{font-size:clamp(16px,1.5vw,18.5px);color:var(--ink-2);line-height:1.5}
+.sub span.solve{
+  color:var(--ink);font-weight:600;
+  margin-top:9px;padding-top:11px;
+  border-top:1px solid var(--rule);
+  max-width:max-content;
+}
+
+/* ---------- painel de acesso ---------- */
+.panel-wrap{position:sticky;top:24px}
+.panel{
+  background:var(--card);
+  border:1px solid var(--rule);
+  border-radius:6px;
+  box-shadow:var(--lift);
+  padding:clamp(22px,2.4vw,30px);
+  display:grid;
+  gap:18px;
+}
+.panel-head{display:grid;gap:9px}
+.logo-tile{
+  width:38px;height:38px;border-radius:5px;
+  display:grid;place-items:center;
+  background:var(--petrol-soft);
+  border:1px solid var(--rule);
+  color:var(--petrol);
+  margin-bottom:5px;
+}
+.logo-tile .mark{width:21px;height:21px}
+.panel h2{
+  font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;
+  font-weight:700;font-size:24px;line-height:1.14;letter-spacing:-.02em;
+  margin:0;text-wrap:balance;
+}
+.panel-head p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.45;max-width:30ch}
+
+.fields{display:grid;gap:13px}
+.field{display:grid;gap:6px}
+.field-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.field label{color:var(--ink-2);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-family:"IBM Plex Mono",monospace}
+.field-row a{
+  font-size:12.5px;color:var(--petrol);text-decoration:none;
+  border-bottom:1px solid var(--petrol-soft);
+}
+.field-row a:hover{border-bottom-color:var(--petrol)}
+input[type=email],input[type=password]{
+  width:100%;
+  font:inherit;font-size:15px;
+  color:var(--ink);
+  background:var(--field);
+  border:1px solid var(--rule);
+  border-radius:4px;
+  padding:11px 12px;
+  transition:border-color .16s,background .16s;
+}
+input::placeholder{color:var(--ink-3)}
+input:hover{border-color:var(--rule-2)}
+input:focus{outline:none;border-color:var(--petrol);background:var(--card)}
+input[aria-invalid="true"]{border-color:var(--signal)}
+
+.keep{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);cursor:pointer}
+.keep input{accent-color:var(--petrol);width:15px;height:15px;margin:0}
+
+.cta{
+  font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;
+  font-weight:700;font-size:16.5px;letter-spacing:-.01em;
+  color:var(--signal-ink);
+  background:var(--signal);
+  border:none;border-radius:4px;
+  padding:15px 18px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  transition:transform .14s,filter .14s;
+}
+.cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.cta:active{transform:translateY(0)}
+.cta .arrow{transition:transform .18s}
+.cta:hover .arrow{transform:translateX(3px)}
+
+.status{margin:0;font-size:13px;color:var(--petrol);min-height:1.1em}
+.status[data-kind="erro"]{color:var(--signal)}
+.panel-foot{
+  border-top:1px solid var(--rule);
+  padding-top:15px;margin-top:-2px;
+  display:grid;gap:9px;
+}
+.panel-foot p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.panel-foot p a{color:var(--petrol);text-decoration:none;font-weight:500;border-bottom:1px solid var(--petrol-soft)}
+.panel-foot p a:hover{border-bottom-color:var(--petrol)}
+.panel-foot .note{color:var(--ink-3);letter-spacing:.06em;font-size:10px}
+
+/* ---------- processo ---------- */
+.process{padding-bottom:clamp(48px,7vw,80px)}
+.process-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.process-head .mono{color:var(--ink-3);flex:none}
+.process-head h3{
+  font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;
+  font-weight:700;font-size:clamp(19px,2vw,23px);letter-spacing:-.02em;margin:0;
+}
+
+.rail{position:relative;height:1px;background:var(--rule);margin:0 0 0}
+.rail-nodes{position:relative;height:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.rail-nodes i{
+  position:relative;justify-self:start;margin-left:16px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--paper);border:1px solid var(--rule-2);
+  top:-5px;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.rail-nodes i.done{background:var(--petrol);border-color:var(--petrol)}
+.rail-nodes i.now{background:var(--signal);border-color:var(--signal);transform:scale(1.34)}
+.pulse{
+  position:absolute;top:-3px;left:0;width:5px;height:5px;border-radius:50%;
+  background:var(--petrol);opacity:0;
+}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.step{
+  appearance:none;text-align:left;font:inherit;cursor:pointer;
+  background:transparent;
+  border:1px solid var(--rule);
+  border-top:1px solid var(--rule);
+  border-radius:5px;
+  padding:18px 20px 19px;
+  display:grid;gap:11px;align-content:start;
+  color:var(--ink);
+  transition:background .18s,border-color .18s,box-shadow .18s,transform .18s;
+}
+.step:hover{border-color:var(--rule-2);background:var(--card);transform:translateY(-2px)}
+.step[aria-expanded="true"]{
+  background:var(--card);
+  border-color:var(--petrol);
+  box-shadow:var(--lift);
+}
+.step-tag{display:flex;align-items:baseline;gap:9px}
+.step-num{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+  color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.step-name{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--petrol);
+}
+.step[aria-expanded="true"] .step-name{color:var(--signal)}
+.step p{
+  margin:0;
+  font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;
+  font-weight:500;font-size:17px;line-height:1.28;letter-spacing:-.015em;
+  text-wrap:pretty;
+}
+.step-detail{
+  display:grid;gap:9px;
+  overflow:hidden;
+  max-height:0;opacity:0;
+  transition:max-height .3s ease,opacity .24s ease;
+}
+.step[aria-expanded="true"] .step-detail{max-height:220px;opacity:1}
+.step-detail span{font-size:14px;line-height:1.5;color:var(--ink-2)}
+.step-out{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);
+  border-top:1px dashed var(--rule);
+  padding-top:9px;
+}
+.step-out b{color:var(--petrol);font-weight:500}
+
+/* ---------- rodapé ---------- */
+footer{
+  border-top:1px solid var(--rule);
+  padding:18px 0 30px;
+  display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;justify-content:space-between;
+}
+footer .mono{color:var(--ink-3)}
+footer nav{display:flex;gap:18px}
+footer nav a{color:var(--ink-2);text-decoration:none;font-size:13.5px}
+footer nav a:hover{color:var(--ink)}
+
+/* ---------- entrada em cena ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes travel{
+  0%{opacity:0;left:0}
+  12%{opacity:1}
+  88%{opacity:1}
+  100%{opacity:0;left:100%}
+}
+.rise{animation:rise .46s cubic-bezier(.2,.7,.3,1) both}
+.d1{animation-delay:.04s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}
+.d4{animation-delay:.26s}.d5{animation-delay:.32s}.d6{animation-delay:.38s}
+.pulse{animation:travel 2.1s .5s ease-in-out 1 both}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+  .step-detail{transition:none}
+}
+
+/* ---------- responsivo ---------- */
+@media (max-width:1000px){
+  .hero{grid-template-columns:1fr;gap:36px}
+  .panel-wrap{position:static;max-width:440px}
+  h1{max-width:20em}
+}
+@media (max-width:760px){
+  .steps{grid-template-columns:1fr}
+  .rail,.rail-nodes{display:none}
+  .step-detail{max-height:none;opacity:1;overflow:visible}
+  .step{background:var(--card)}
+  .strip .mono{display:none}
+}
+</style>
+
+<div class="shell">
+  <header class="strip">
+    <div class="lockup">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="41 16" stroke-linecap="round" transform="rotate(-58 12 12)"/>
+        <path d="M12 2.9 L16.6 6.1 L12 8.7 Z" fill="currentColor"/>
+        <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
+      </svg>
+      <span class="wordmark">Motriz</span>
+    </div>
+    <div class="ruler" aria-hidden="true"></div>
+    <span class="mono">Painel de aquisição</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="argument">
+        <p class="mono eyebrow rise d1">Conteúdo com IA&nbsp;·&nbsp;Fechamento no WhatsApp</p>
+
+        <h1 class="rise d2">
+          O problema da sua empresa nunca foi o produto.
+          <span class="thesis">É a falta de uma <span class="stress">máquina previsível de aquisição</span>.</span>
+        </h1>
+
+        <p class="sub rise d3">
+          <span>Conteúdo fraco atrai o cliente errado.</span>
+          <span>Atendimento lento perde o cliente certo.</span>
+          <span class="solve">Nós resolvemos os dois.</span>
+        </p>
+      </div>
+
+      <aside class="panel-wrap rise d4">
+        <form class="panel" id="acesso" novalidate>
+          <div class="panel-head">
+            <div class="logo-tile" aria-hidden="true">
+              <svg class="mark" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="41 16" stroke-linecap="round" transform="rotate(-58 12 12)"/>
+                <path d="M12 2.9 L16.6 6.1 L12 8.7 Z" fill="currentColor"/>
+                <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
+              </svg>
+            </div>
+            <h2>Acesse seu Painel de Aquisição.</h2>
+            <p>Retome o controle da sua presença digital e automação de vendas.</p>
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <div class="field-row"><label for="email">E-mail corporativo</label></div>
+              <input id="email" name="email" type="email" inputmode="email" autocomplete="username"
+                     placeholder="nome@suaempresa.com.br" required>
+            </div>
+            <div class="field">
+              <div class="field-row">
+                <label for="senha">Senha</label>
+                <a href="#recuperar">Esqueci minha senha</a>
+              </div>
+              <input id="senha" name="senha" type="password" autocomplete="current-password"
+                     placeholder="••••••••" required>
+            </div>
+            <label class="keep"><input type="checkbox" id="manter" checked> Manter sessão ativa neste dispositivo</label>
+          </div>
+
+          <button class="cta" type="submit">
+            Acessar Máquina de Vendas
+            <span class="arrow" aria-hidden="true">➔</span>
+          </button>
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+
+          <div class="panel-foot">
+            <p>Ainda não tem acesso? <a href="#demonstracao">Solicitar demonstração</a></p>
+            <p class="note mono">Pré-visualização de interface — os campos não enviam dados.</p>
+          </div>
+        </form>
+      </aside>
+    </section>
+
+    <section class="process rise d5" aria-labelledby="processo-titulo">
+      <div class="process-head">
+        <span class="mono">O processo</span>
+        <h3 id="processo-titulo">Três etapas, uma esteira contínua</h3>
+      </div>
+
+      <div class="rail" aria-hidden="true"></div>
+      <div class="rail-nodes" id="nodes" aria-hidden="true">
+        <i class="now"></i><i></i><i></i>
+        <span class="pulse"></span>
+      </div>
+
+      <div class="steps" id="steps">
+        <button class="step" type="button" aria-expanded="true" aria-controls="d-1">
+          <span class="step-tag"><span class="step-num">Etapa 01</span><span class="step-name">Atração</span></span>
+          <p>IA que transforma a proposta da sua empresa em posts de alta retenção.</p>
+          <span class="step-detail" id="d-1">
+            <span>Sua oferta entra uma vez. Sai como pauta, gancho e texto pronto para publicar — na linguagem de quem você realmente quer atrair.</span>
+            <span class="step-out">Saída · <b>pauta + gancho + texto pronto</b></span>
+          </span>
+        </button>
+
+        <button class="step" type="button" aria-expanded="false" aria-controls="d-2">
+          <span class="step-tag"><span class="step-num">Etapa 02</span><span class="step-name">Engajamento</span></span>
+          <p>Storytelling validado para gerar conteúdos, ideias e desejo em suas redes sociais.</p>
+          <span class="step-detail" id="d-2">
+            <span>Estruturas narrativas já validadas viram calendário: o que dizer, em que ordem e com que frequência, para o desejo existir antes da oferta.</span>
+            <span class="step-out">Saída · <b>calendário narrativo por semana</b></span>
+          </span>
+        </button>
+
+        <button class="step" type="button" aria-expanded="false" aria-controls="d-3">
+          <span class="step-tag"><span class="step-num">Etapa 03</span><span class="step-name">Fechamento</span></span>
+          <p>Agente de IA no WhatsApp que qualifica e fecha o lead sem dependência humana.</p>
+          <span class="step-detail" id="d-3">
+            <span>Responde em segundos, faz as perguntas de qualificação, contorna objeção e conduz o lead até o fechamento — em qualquer horário.</span>
+            <span class="step-out">Saída · <b>conversa qualificada até o fechamento</b></span>
+          </span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rise d6">
+    <span class="mono">Motriz · Máquina de aquisição</span>
+    <nav>
+      <a href="#processo-titulo">Como funciona</a>
+      <a href="#acesso">Entrar</a>
+      <a href="#demonstracao">Demonstração</a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+(function(){
+  /* etapas: cartão ativo move o nó no trilho */
+  var steps = Array.prototype.slice.call(document.querySelectorAll('#steps .step'));
+  var nodes = Array.prototype.slice.call(document.querySelectorAll('#nodes i'));
+
+  function ativar(i){
+    steps.forEach(function(s,k){ s.setAttribute('aria-expanded', k === i ? 'true' : 'false'); });
+    nodes.forEach(function(n,k){
+      n.className = k === i ? 'now' : (k < i ? 'done' : '');
+    });
+  }
+  steps.forEach(function(s,i){
+    s.addEventListener('click', function(){ ativar(i); });
+    s.addEventListener('mouseenter', function(){ ativar(i); });
+  });
+
+  /* acesso: validação local, nada é enviado */
+  var form = document.getElementById('acesso');
+  var email = document.getElementById('email');
+  var senha = document.getElementById('senha');
+  var status = document.getElementById('status');
+
+  function aviso(texto, kind){
+    status.textContent = texto;
+    if (kind) { status.setAttribute('data-kind', kind); } else { status.removeAttribute('data-kind'); }
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var valido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim());
+    email.setAttribute('aria-invalid', valido ? 'false' : 'true');
+    senha.setAttribute('aria-invalid', senha.value.length >= 6 ? 'false' : 'true');
+
+    if (!valido) { aviso('Informe um e-mail corporativo válido, como nome@suaempresa.com.br.', 'erro'); email.focus(); return; }
+    if (senha.value.length < 6) { aviso('A senha tem no mínimo 6 caracteres.', 'erro'); senha.focus(); return; }
+
+    aviso('Painel em preparação — esta é uma pré-visualização e nenhum dado foi enviado.');
+  });
+
+  [email, senha].forEach(function(campo){
+    campo.addEventListener('input', function(){
+      campo.setAttribute('aria-invalid','false');
+      if (status.getAttribute('data-kind') === 'erro') aviso('');
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1634 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Publica — uma máquina de conteúdo para sua empresa: contexto, estratégia, geração e organização no mesmo lugar. R$ 97/mês, 7 dias grátis.">
+<style>
+  :root{color-scheme:light dark}
+  body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>Publica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+</head>
+<body>
+
+<style>
+/* ============ tokens ============ */
+:root{
+  --bone:#F4F2EF;
+  --bone-2:#EBE8E3;
+  --card:#FFFFFF;
+  --ink:#0B0B0C;
+  --ink-2:#4C4945;
+  --ink-3:#8B8681;
+  --rule:#DDD9D2;
+  --rule-2:#C9C3BA;
+  --terra:#B4451E;
+  --terra-2:#93381A;
+  --terra-soft:rgba(180,69,30,.09);
+  --terra-ink:#FFFFFF;
+  --ok:#2F6B4F;
+  --lift:0 1px 0 rgba(11,11,12,.03), 0 20px 44px -30px rgba(11,11,12,.4);
+  --lift-2:0 1px 0 rgba(11,11,12,.04), 0 34px 60px -34px rgba(11,11,12,.5);
+  --shell:1160px;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bone:#0B0B0C;
+    --bone-2:#111112;
+    --card:#17181A;
+    --ink:#F2F0ED;
+    --ink-2:#A9A5A0;
+    --ink-3:#7C7873;
+    --rule:#26272A;
+    --rule-2:#34363A;
+    --terra:#E4682F;
+    --terra-2:#F08A54;
+    --terra-soft:rgba(228,104,47,.13);
+    --terra-ink:#12100E;
+    --ok:#5FBE8E;
+    --lift:0 1px 0 rgba(255,255,255,.03), 0 24px 48px -30px rgba(0,0,0,.85);
+    --lift-2:0 1px 0 rgba(255,255,255,.04), 0 38px 66px -34px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --bone:#0B0B0C;
+  --bone-2:#111112;
+  --card:#17181A;
+  --ink:#F2F0ED;
+  --ink-2:#A9A5A0;
+  --ink-3:#7C7873;
+  --rule:#26272A;
+  --rule-2:#34363A;
+  --terra:#E4682F;
+  --terra-2:#F08A54;
+  --terra-soft:rgba(228,104,47,.13);
+  --terra-ink:#12100E;
+  --ok:#5FBE8E;
+  --lift:0 1px 0 rgba(255,255,255,.03), 0 24px 48px -30px rgba(0,0,0,.85);
+  --lift-2:0 1px 0 rgba(255,255,255,.04), 0 38px 66px -34px rgba(0,0,0,.9);
+}
+
+/* ============ base ============ */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bone);color:var(--ink);
+  font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--terra);outline-offset:3px;border-radius:3px}
+.shell{max-width:var(--shell);margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+h1,h2,h3,h4{font-family:"Archivo","Instrument Sans",sans-serif;font-weight:700;letter-spacing:-.028em;margin:0;text-wrap:balance}
+h1{font-size:clamp(33px,5.2vw,62px);line-height:1.03}
+h2{font-size:clamp(26px,3.6vw,44px);line-height:1.07}
+h3{font-size:clamp(18px,1.8vw,21px);line-height:1.24;letter-spacing:-.02em}
+h4{font-size:15px;line-height:1.3;letter-spacing:-.012em;font-weight:600}
+p{margin:0}
+
+section{padding:clamp(56px,7.5vw,104px) 0;scroll-margin-top:70px;border-top:1px solid var(--rule)}
+section.alt{background:var(--bone-2)}
+.lede{font-size:clamp(16px,1.5vw,18.5px);color:var(--ink-2);max-width:60ch;line-height:1.5}
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--terra);margin-bottom:16px}
+.eyebrow::after{content:"";flex:1;max-width:90px;height:1px;background:var(--rule-2)}
+.sec-head{display:grid;gap:14px;margin-bottom:clamp(28px,4vw,48px);max-width:62ch}
+
+/* ============ botões ============ */
+.btn{
+  font-family:"Archivo",sans-serif;font-weight:700;font-size:15.5px;letter-spacing:-.008em;
+  border-radius:var(--r);padding:13px 20px;cursor:pointer;border:1px solid transparent;
+  display:inline-flex;align-items:center;gap:9px;transition:transform .14s,filter .14s,background .16s,border-color .16s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-1{background:var(--terra);color:var(--terra-ink)}
+.btn-1:hover{filter:brightness(1.07)}
+.btn-2{background:transparent;color:var(--ink);border-color:var(--rule-2)}
+.btn-2:hover{border-color:var(--ink);background:var(--card)}
+.btn-sm{font-size:14px;padding:9px 15px}
+.btn .arrow{transition:transform .18s}
+.btn:hover .arrow{transform:translateX(3px)}
+.cta-row{display:flex;flex-wrap:wrap;gap:11px;align-items:center}
+.fineprint{font-size:13px;color:var(--ink-3);margin-top:14px}
+
+/* ============ nav ============ */
+.nav{
+  position:sticky;top:0;z-index:40;
+  background:color-mix(in srgb,var(--bone) 88%,transparent);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--rule);
+}
+.nav-in{display:flex;align-items:center;gap:clamp(12px,2.4vw,30px);height:60px}
+.brand{display:flex;align-items:center;gap:8px;font-family:"Archivo",sans-serif;font-weight:800;font-size:18px;letter-spacing:-.02em;flex:none}
+.brand .glyph{width:20px;height:20px;color:var(--terra);flex:none}
+.nav-links{display:flex;gap:clamp(10px,1.7vw,22px);margin-left:auto;align-items:center}
+.nav-links a{font-size:14.5px;color:var(--ink-2)}
+.nav-links a:hover{color:var(--ink)}
+.nav-act{display:flex;gap:9px;align-items:center;flex:none}
+.nav-act .entrar{font-size:14.5px;color:var(--ink-2);padding:6px 4px}
+.nav-act .entrar:hover{color:var(--ink)}
+
+/* ============ hero ============ */
+.hero{border-top:none;padding-top:clamp(46px,6.5vw,84px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(320px,430px);gap:clamp(30px,4.6vw,64px);align-items:start}
+.hero h1{max-width:15.5em;margin-bottom:22px}
+.hero h1 em{font-style:normal;color:var(--terra)}
+.hero .lede{margin-bottom:26px;max-width:44ch}
+.hero .cta-row{margin-bottom:0}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:26px;padding-top:20px;border-top:1px solid var(--rule)}
+.trust span{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:7px}
+.trust .dot{width:5px;height:5px;border-radius:50%;background:var(--terra);flex:none}
+
+/* ============ cartão de conteúdo gerado ============ */
+.gen{background:var(--card);border:1px solid var(--rule);border-radius:8px;box-shadow:var(--lift-2);overflow:hidden}
+.gen-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--rule)}
+.gen-bar .mono{color:var(--ink-3);font-size:10px}
+.gen-bar .pip{width:7px;height:7px;border-radius:50%;background:var(--terra);flex:none}
+.gen-bar .spacer{flex:1}
+.shot{
+  aspect-ratio:4/5;position:relative;display:grid;align-content:end;gap:8px;padding:18px;
+  background:
+    radial-gradient(120% 80% at 20% 12%, rgba(255,255,255,.28) 0%, transparent 55%),
+    linear-gradient(155deg,#C9683C 0%,#8E3A1B 46%,#3A1C11 100%);
+  color:#FFF6F0;
+}
+.shot .badge{position:absolute;top:14px;left:14px;background:rgba(11,11,12,.5);border:1px solid rgba(255,255,255,.22);border-radius:3px;padding:4px 7px;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase}
+.shot h3{font-size:clamp(19px,2.3vw,25px);color:#FFF6F0;max-width:16ch;letter-spacing:-.025em}
+.shot .sig{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.82}
+.gen-body{padding:15px}
+.gen-body p{font-size:14px;line-height:1.5;color:var(--ink-2)}
+.tags{color:var(--terra);font-size:13.5px;margin-top:7px;word-spacing:.1em}
+.gen-foot{display:flex;flex-wrap:wrap;gap:7px;padding:0 15px 15px}
+.chip{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  border:1px solid var(--rule);border-radius:99px;padding:5px 10px;color:var(--ink-2);background:var(--bone);
+}
+.chip b{color:var(--terra);font-weight:500}
+
+/* ============ grelhas genéricas ============ */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2.4vw,26px)}
+.tile{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:19px;display:grid;gap:8px;align-content:start}
+.tile .mono{color:var(--terra)}
+.tile p{font-size:14px;color:var(--ink-2);line-height:1.48}
+.bare{display:grid;gap:8px;align-content:start;padding:19px 0;border-top:1px solid var(--rule)}
+.bare p{font-size:14px;color:var(--ink-2);line-height:1.48}
+.num{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+/* ============ marquee de segmentos ============ */
+.marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.track{display:flex;gap:10px;width:max-content;animation:slide 34s linear infinite}
+.track.rev{animation-direction:reverse;margin-top:10px}
+.marquee:hover .track{animation-play-state:paused}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.seg{
+  font-family:"Archivo",sans-serif;font-weight:600;font-size:15px;
+  border:1px solid var(--rule);border-radius:99px;padding:9px 17px;background:var(--card);white-space:nowrap;
+}
+
+/* ============ comparação hoje x plataforma ============ */
+.cmp{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,34px);align-items:stretch}
+.cmp-col{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:22px;display:grid;gap:14px;align-content:start}
+.cmp-col.win{border-color:var(--terra);box-shadow:var(--lift)}
+.cmp-col h3{display:flex;align-items:baseline;gap:9px}
+.flow{display:grid;gap:7px}
+.flow li{
+  list-style:none;display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--ink-2);
+  border:1px dashed var(--rule-2);border-radius:4px;padding:9px 12px;
+}
+.flow li .num{flex:none}
+.cmp-col.win .flow li{border-style:solid;border-color:var(--rule);background:var(--bone);color:var(--ink);font-weight:500}
+.cmp-mid{display:grid;place-items:center;color:var(--ink-3);font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em}
+.cmp-note{font-size:13px;color:var(--ink-3);border-top:1px solid var(--rule);padding-top:12px}
+.cmp-out{margin-top:22px;font-family:"Archivo",sans-serif;font-weight:700;font-size:clamp(17px,2vw,22px);letter-spacing:-.02em;text-align:center;color:var(--terra)}
+
+/* ============ etapas / como funciona ============ */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.step{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:22px;display:grid;gap:12px;align-content:start;position:relative}
+.step::before{content:"";position:absolute;left:0;top:0;width:100%;height:2px;background:var(--terra);border-radius:var(--r) var(--r) 0 0;opacity:.9}
+.step .mono{color:var(--terra)}
+.step ul{margin:0;padding:0;display:grid;gap:6px}
+.step li{list-style:none;font-size:14.5px;color:var(--ink-2);display:flex;gap:9px;align-items:baseline}
+.step li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--rule-2);flex:none;transform:translateY(-2px)}
+.step .tailnote{font-size:13.5px;color:var(--ink-3);border-top:1px solid var(--rule);padding-top:11px}
+
+/* ============ demonstração ============ */
+.demo{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,388px);gap:clamp(20px,3.4vw,40px);align-items:start}
+.term{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.term-row{padding:15px 18px;border-bottom:1px solid var(--rule);display:grid;gap:6px}
+.term-row:last-child{border-bottom:none}
+.term-row .mono{color:var(--ink-3);font-size:10px}
+.ask{font-family:"Archivo",sans-serif;font-weight:600;font-size:17px;letter-spacing:-.015em}
+.proc{display:grid;gap:7px}
+.proc li{list-style:none;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-2)}
+.proc li .tick{width:14px;height:14px;border-radius:50%;border:1px solid var(--rule-2);flex:none;display:grid;place-items:center;font-size:9px;color:var(--terra-ink);background:transparent;transition:background .2s,border-color .2s}
+.proc li.done .tick{background:var(--terra);border-color:var(--terra)}
+.proc li.done{color:var(--ink)}
+.ctx{display:flex;flex-wrap:wrap;gap:7px}
+.out{background:var(--bone);border:1px solid var(--rule);border-radius:5px;padding:15px;display:grid;gap:8px}
+.out h4{font-family:"Archivo",sans-serif;font-size:18px;font-weight:700;letter-spacing:-.02em}
+.out p{font-size:14px;color:var(--ink-2);line-height:1.5}
+
+/* ============ experimente ============ */
+.lab{background:var(--card);border:1px solid var(--rule);border-radius:8px;box-shadow:var(--lift);overflow:hidden}
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,382px)}
+.lab-controls{padding:clamp(20px,2.6vw,28px);display:grid;gap:20px;align-content:start}
+.pickset{display:grid;gap:9px}
+.pickset > .mono{color:var(--ink-3)}
+.picks{display:flex;flex-wrap:wrap;gap:8px}
+.pick{
+  font:inherit;font-size:14.5px;cursor:pointer;background:var(--bone);color:var(--ink-2);
+  border:1px solid var(--rule);border-radius:99px;padding:8px 15px;transition:all .16s;
+}
+.pick:hover{border-color:var(--rule-2);color:var(--ink)}
+.pick[aria-pressed="true"]{background:var(--terra);border-color:var(--terra);color:var(--terra-ink);font-weight:600}
+.lab-out{border-left:1px solid var(--rule);background:var(--bone);padding:clamp(20px,2.6vw,28px);display:grid;gap:13px;align-content:start}
+.lab-out .struct{display:grid;gap:6px}
+.lab-out .struct li{list-style:none;font-size:13.5px;color:var(--ink-2);display:flex;gap:8px;align-items:baseline}
+.lab-out .struct li::before{content:"→";color:var(--terra);flex:none;font-size:12px}
+.lab-out h4{font-family:"Archivo",sans-serif;font-size:19px;font-weight:700;letter-spacing:-.022em;line-height:1.2}
+.lab-out .body{font-size:14px;color:var(--ink-2);line-height:1.5}
+.lab-foot{border-top:1px solid var(--rule);padding:14px clamp(20px,2.6vw,28px);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.lab-foot .mono{color:var(--ink-3)}
+
+/* ============ perfil da marca ============ */
+.profile{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:clamp(18px,2.4vw,26px);display:grid;gap:0}
+.prow{display:grid;grid-template-columns:minmax(120px,150px) 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.prow:last-child{border-bottom:none}
+.prow dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.prow dd{margin:0;font-size:14.5px;color:var(--ink)}
+.swatches{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.sw{display:flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-2)}
+.sw i{width:14px;height:14px;border-radius:3px;border:1px solid var(--rule-2);display:block}
+.beforeafter{display:grid;gap:12px}
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:15px}
+.ba .side{display:grid;gap:5px}
+.ba .mono{font-size:10px;color:var(--ink-3)}
+.ba .txt{font-size:14.5px;line-height:1.4}
+.ba .old .txt{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--rule-2)}
+.ba .new .txt{color:var(--ink);font-weight:500}
+.ba .sep{color:var(--terra);font-size:15px}
+
+/* ============ casos de uso (abas) ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.tab{
+  font:inherit;font-size:14.5px;cursor:pointer;background:transparent;color:var(--ink-2);
+  border:1px solid var(--rule);border-radius:99px;padding:8px 16px;transition:all .16s;
+}
+.tab:hover{color:var(--ink);border-color:var(--rule-2)}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--bone);font-weight:600}
+.case{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,376px);gap:clamp(20px,3.2vw,38px);align-items:start}
+.case-left{display:grid;gap:18px}
+.case h3{font-size:clamp(20px,2.4vw,27px)}
+.ask-box{background:var(--card);border:1px solid var(--rule);border-left:2px solid var(--terra);border-radius:0 var(--r) var(--r) 0;padding:15px 17px;display:grid;gap:6px}
+.ask-box .mono{color:var(--ink-3);font-size:10px}
+.ask-box p{font-family:"Archivo",sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-.015em}
+.deliver{display:grid;gap:8px}
+.deliver li{list-style:none;display:flex;gap:10px;align-items:center;font-size:14.5px;padding:11px 13px;background:var(--card);border:1px solid var(--rule);border-radius:5px}
+.deliver li .mono{color:var(--terra);font-size:10px;flex:none}
+
+/* ============ calendário ============ */
+.week{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.day{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:16px;display:grid;gap:10px;align-content:start;transition:border-color .16s,transform .16s}
+.day:hover{border-color:var(--terra);transform:translateY(-2px)}
+.day-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-bottom:1px solid var(--rule);padding-bottom:9px}
+.day-top .dow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;font-weight:500}
+.day-top .goal{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--terra)}
+.day p{font-family:"Archivo",sans-serif;font-weight:600;font-size:14.5px;line-height:1.3;letter-spacing:-.012em}
+.day .kind{font-size:12.5px;color:var(--ink-3)}
+
+/* ============ campanha ============ */
+.camp{display:grid;gap:10px}
+.camp-item{
+  display:grid;grid-template-columns:auto minmax(120px,168px) 1fr;gap:clamp(10px,2vw,20px);align-items:baseline;
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:15px 17px;
+}
+.camp-item .num{color:var(--terra);font-size:12px}
+.camp-item h4{font-family:"Archivo",sans-serif;font-size:15.5px}
+.camp-item p{font-size:14px;color:var(--ink-2);line-height:1.45}
+.camp-goal{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:16px 18px;display:grid;gap:5px;margin-bottom:16px}
+.camp-goal .mono{color:var(--ink-3);font-size:10px}
+.camp-goal p{font-family:"Archivo",sans-serif;font-weight:600;font-size:17px;letter-spacing:-.015em}
+
+/* ============ preço ============ */
+.price-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,392px);gap:clamp(22px,3.6vw,44px);align-items:center}
+.price{background:var(--card);border:1px solid var(--ink);border-radius:8px;box-shadow:var(--lift-2);padding:clamp(22px,2.6vw,30px);display:grid;gap:17px}
+.price-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.plan{font-family:"Archivo",sans-serif;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.free{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--terra-ink);background:var(--terra);border-radius:99px;padding:5px 10px}
+.amount{display:flex;align-items:baseline;gap:6px}
+.amount .val{font-family:"Archivo",sans-serif;font-weight:800;font-size:clamp(38px,5vw,54px);letter-spacing:-.035em;line-height:1}
+.amount .per{font-size:15px;color:var(--ink-2)}
+.incl{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:16px 0}
+.incl li{list-style:none;font-size:14px;display:flex;gap:8px;align-items:baseline;color:var(--ink-2)}
+.incl li::before{content:"✓";color:var(--terra);font-size:12px;flex:none}
+.price .btn{justify-content:center}
+
+/* ============ trilha 7 dias ============ */
+.trail{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.stop{padding:20px 18px;border-right:1px solid var(--rule);display:grid;gap:9px;align-content:start}
+.stop:last-child{border-right:none}
+.stop .mono{color:var(--terra)}
+.stop p{font-family:"Archivo",sans-serif;font-weight:600;font-size:15.5px;letter-spacing:-.015em;line-height:1.25}
+.stop .bar{height:2px;background:var(--rule);border-radius:2px;overflow:hidden}
+.stop .bar i{display:block;height:100%;background:var(--terra);width:25%}
+.stop:nth-child(2) .bar i{width:50%}
+.stop:nth-child(3) .bar i{width:75%}
+.stop:nth-child(4) .bar i{width:100%}
+
+/* ============ faq ============ */
+.objections{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.obj{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:19px;display:grid;gap:8px}
+.obj .q{font-family:"Archivo",sans-serif;font-weight:700;font-size:16.5px;letter-spacing:-.018em;color:var(--terra)}
+.obj p{font-size:14.5px;color:var(--ink-2);line-height:1.48}
+.faq{display:grid;gap:0;border-top:1px solid var(--rule)}
+details{border-bottom:1px solid var(--rule)}
+summary{
+  cursor:pointer;list-style:none;padding:17px 40px 17px 0;position:relative;
+  font-family:"Archivo",sans-serif;font-weight:600;font-size:16.5px;letter-spacing:-.016em;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{
+  content:"+";position:absolute;right:8px;top:15px;color:var(--terra);font-size:20px;font-weight:400;
+  transition:transform .2s;line-height:1;
+}
+details[open] summary::after{transform:rotate(45deg)}
+summary:hover{color:var(--terra)}
+details .ans{padding:0 clamp(20px,6vw,90px) 19px 0;font-size:15px;color:var(--ink-2);line-height:1.55;margin-top:-4px}
+
+/* ============ posicionamento ============ */
+.pos-list{display:grid;gap:9px}
+.pos-item{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px}
+.pos-item p{font-family:"Archivo",sans-serif;font-weight:600;font-size:15px;letter-spacing:-.014em;line-height:1.3}
+.pos-item .kind{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+
+/* ============ cta final ============ */
+.final{background:var(--ink);color:var(--bone);border-top:1px solid var(--ink)}
+.final h2{color:var(--bone);max-width:22ch}
+.final .lede{color:color-mix(in srgb,var(--bone) 68%,transparent)}
+.final .eyebrow{color:var(--terra-2)}
+.final .eyebrow::after{background:color-mix(in srgb,var(--bone) 25%,transparent)}
+.final .btn-2{color:var(--bone);border-color:color-mix(in srgb,var(--bone) 32%,transparent)}
+.final .btn-2:hover{background:color-mix(in srgb,var(--bone) 10%,transparent);border-color:var(--bone)}
+.final .fineprint{color:color-mix(in srgb,var(--bone) 52%,transparent)}
+
+/* ============ rodapé ============ */
+footer{background:var(--ink);color:var(--bone);padding:clamp(40px,5vw,64px) 0 26px;border-top:1px solid color-mix(in srgb,var(--bone) 14%,transparent)}
+.foot-grid{display:grid;grid-template-columns:minmax(240px,1.5fr) repeat(4,minmax(120px,1fr));gap:clamp(20px,3vw,38px)}
+.foot-brand{display:grid;gap:14px;align-content:start}
+.foot-brand .brand{color:var(--bone)}
+.foot-brand p{font-size:14px;color:color-mix(in srgb,var(--bone) 62%,transparent);line-height:1.5;max-width:34ch}
+.social{display:flex;gap:14px}
+.social a{font-size:13.5px;color:color-mix(in srgb,var(--bone) 62%,transparent)}
+.social a:hover{color:var(--bone)}
+.foot-col{display:grid;gap:9px;align-content:start}
+.foot-col .mono{color:var(--terra-2);margin-bottom:3px}
+.foot-col a{font-size:14px;color:color-mix(in srgb,var(--bone) 66%,transparent)}
+.foot-col a:hover{color:var(--bone)}
+.foot-bar{
+  margin-top:clamp(28px,4vw,44px);padding-top:18px;
+  border-top:1px solid color-mix(in srgb,var(--bone) 14%,transparent);
+  display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:space-between;align-items:center;
+}
+.foot-bar span{font-size:13px;color:color-mix(in srgb,var(--bone) 50%,transparent)}
+.foot-bar .mono{color:color-mix(in srgb,var(--bone) 62%,transparent)}
+
+/* ============ entrada em cena ============ */
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.rise{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.d1{animation-delay:.03s}.d2{animation-delay:.1s}.d3{animation-delay:.17s}.d4{animation-delay:.24s}.d5{animation-delay:.31s}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+
+/* ============ responsivo ============ */
+@media (max-width:1060px){
+  .nav-links{display:none}
+  .hero-grid,.demo,.case,.price-wrap,.lab-grid{grid-template-columns:1fr}
+  .lab-out{border-left:none;border-top:1px solid var(--rule)}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .week{grid-template-columns:repeat(2,1fr)}
+  .trail{grid-template-columns:repeat(2,1fr)}
+  .stop:nth-child(2){border-right:none}
+  .stop:nth-child(1),.stop:nth-child(2){border-bottom:1px solid var(--rule)}
+  .foot-grid{grid-template-columns:repeat(2,1fr)}
+  .foot-brand{grid-column:1/-1}
+}
+@media (max-width:720px){
+  .cmp{grid-template-columns:1fr}
+  .cmp-mid{padding:4px 0}
+  .g3,.g2,.steps,.objections,.incl{grid-template-columns:1fr}
+  .g4{grid-template-columns:1fr}
+  .week{grid-template-columns:1fr}
+  .camp-item{grid-template-columns:auto 1fr;row-gap:4px}
+  .camp-item p{grid-column:2}
+  .ba{grid-template-columns:1fr;gap:9px}
+  .ba .sep{transform:rotate(90deg);justify-self:start}
+  .prow{grid-template-columns:1fr;gap:3px}
+  .pos-item{grid-template-columns:auto 1fr;row-gap:4px}
+  .pos-item .kind{grid-column:2}
+  .foot-grid{grid-template-columns:1fr}
+}
+</style>
+
+<nav class="nav">
+  <div class="shell nav-in">
+    <a class="brand" href="#top">
+      <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="3" width="13" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M20 8v10a3 3 0 0 1-3 3H7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="9.5" cy="9.5" r="2.2" fill="currentColor"/>
+      </svg>
+      Publica
+    </a>
+    <div class="nav-links">
+      <a href="#produto">Produto</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#precos">Preços</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-act">
+      <a class="entrar" href="#entrar">Entrar</a>
+      <a class="btn btn-1 btn-sm" href="#precos">Começar grátis</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="produto">
+    <div class="shell hero-grid">
+      <div>
+        <p class="mono eyebrow rise d1">Máquina de conteúdo para empresas</p>
+        <h1 class="rise d1">Sua empresa não precisa de mais uma ferramenta. Precisa de uma <em>máquina de conteúdo</em>.</h1>
+        <p class="lede rise d2">Transforme os produtos, serviços e diferenciais da sua empresa em imagens, textos e campanhas prontas para publicar — em poucos minutos.</p>
+        <div class="cta-row rise d3">
+          <a class="btn btn-1" href="#precos">Começar grátis por 7 dias <span class="arrow" aria-hidden="true">➔</span></a>
+          <a class="btn btn-2" href="#como-funciona">Ver como funciona</a>
+        </div>
+        <div class="trust rise d4">
+          <span><i class="dot" aria-hidden="true"></i> 7 dias grátis</span>
+          <span><i class="dot" aria-hidden="true"></i> R$ 97/mês depois do teste</span>
+          <span><i class="dot" aria-hidden="true"></i> Cancele quando quiser</span>
+        </div>
+      </div>
+
+      <div class="gen rise d3">
+        <div class="gen-bar">
+          <i class="pip" aria-hidden="true"></i>
+          <span class="mono">Estofados Novo Lar</span>
+          <span class="spacer"></span>
+          <span class="mono">Post · pronto</span>
+        </div>
+        <div class="shot">
+          <span class="badge">Imagem gerada</span>
+          <h3>Seu sofá pode estar mais sujo do que parece.</h3>
+          <span class="sig">Secagem em 4h · atende no local</span>
+        </div>
+        <div class="gen-body">
+          <p>Poeira, ácaro e resíduo de uso ficam no tecido mesmo quando a peça parece limpa. A higienização profissional remove o que o aspirador não alcança — e o estofado seca em cerca de 4 horas. Agende sua limpeza.</p>
+          <p class="tags">#limpezadeestofados #higienizacao #casalimpa</p>
+        </div>
+        <div class="gen-foot">
+          <span class="chip">Conteúdo gerado <b>em 38 segundos</b></span>
+          <span class="chip">Marca aplicada <b>cores e tom de voz</b></span>
+          <span class="chip">Calendário <b>semana completa</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BENEFÍCIOS ===== -->
+  <section class="alt">
+    <div class="shell">
+      <div class="g4">
+        <div class="tile">
+          <span class="mono">Velocidade</span>
+          <h4>Conteúdo em minutos</h4>
+          <p>Da ideia ao post pronto sem trocar de ferramenta no meio do caminho.</p>
+        </div>
+        <div class="tile">
+          <span class="mono">Consistência</span>
+          <h4>Identidade da sua marca</h4>
+          <p>Cores, tipografia e tom de voz cadastrados uma vez e aplicados sempre.</p>
+        </div>
+        <div class="tile">
+          <span class="mono">Rotina</span>
+          <h4>Calendário organizado</h4>
+          <p>A semana montada com objetivo em cada dia, em vez de decidida na pressa.</p>
+        </div>
+        <div class="tile">
+          <span class="mono">Completo</span>
+          <h4>Imagens e textos juntos</h4>
+          <p>A imagem e a legenda saem do mesmo contexto — nada descolado do que o texto diz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEGMENTOS ===== -->
+  <section>
+    <div class="shell sec-head">
+      <p class="mono eyebrow">Para quem é</p>
+      <h2>Deixe a IA cuidar da produção.</h2>
+      <p class="lede">O que muda de um negócio para o outro não é a ferramenta — é o contexto que ela recebe.</p>
+    </div>
+    <div class="marquee" aria-label="Segmentos atendidos">
+      <div class="track">
+        <span class="seg">Clínicas</span><span class="seg">Restaurantes</span><span class="seg">Barbearias</span><span class="seg">Profissionais</span><span class="seg">E-commerce</span><span class="seg">Serviços</span><span class="seg">Academias</span><span class="seg">Imobiliárias</span><span class="seg">Pet shops</span><span class="seg">Estúdios</span><span class="seg">Social medias</span><span class="seg">Consultorias</span>
+        <span class="seg">Clínicas</span><span class="seg">Restaurantes</span><span class="seg">Barbearias</span><span class="seg">Profissionais</span><span class="seg">E-commerce</span><span class="seg">Serviços</span><span class="seg">Academias</span><span class="seg">Imobiliárias</span><span class="seg">Pet shops</span><span class="seg">Estúdios</span><span class="seg">Social medias</span><span class="seg">Consultorias</span>
+      </div>
+      <div class="track rev" aria-hidden="true">
+        <span class="seg">Consultorias</span><span class="seg">Social medias</span><span class="seg">Estúdios</span><span class="seg">Pet shops</span><span class="seg">Imobiliárias</span><span class="seg">Academias</span><span class="seg">Serviços</span><span class="seg">E-commerce</span><span class="seg">Profissionais</span><span class="seg">Barbearias</span><span class="seg">Restaurantes</span><span class="seg">Clínicas</span>
+        <span class="seg">Consultorias</span><span class="seg">Social medias</span><span class="seg">Estúdios</span><span class="seg">Pet shops</span><span class="seg">Imobiliárias</span><span class="seg">Academias</span><span class="seg">Serviços</span><span class="seg">E-commerce</span><span class="seg">Profissionais</span><span class="seg">Barbearias</span><span class="seg">Restaurantes</span><span class="seg">Clínicas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROBLEMA REAL ===== -->
+  <section class="alt">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">O problema real</p>
+        <h2>Você não precisa de mais ideias. Precisa conseguir executar.</h2>
+      </div>
+      <div class="g4">
+        <div class="bare">
+          <span class="num">01</span>
+          <h4>"O que eu posto hoje?"</h4>
+          <p>Todos os dias começa a mesma pergunta.</p>
+        </div>
+        <div class="bare">
+          <span class="num">02</span>
+          <h4>"Não tenho tempo"</h4>
+          <p>Criar conteúdo consome horas que poderiam estar sendo usadas no negócio.</p>
+        </div>
+        <div class="bare">
+          <span class="num">03</span>
+          <h4>"Meu conteúdo parece igual ao de todo mundo"</h4>
+          <p>Ferramentas genéricas produzem conteúdo genérico.</p>
+        </div>
+        <div class="bare">
+          <span class="num">04</span>
+          <h4>"Eu começo e paro"</h4>
+          <p>Sem processo, o Instagram vira uma obrigação que nunca vira rotina.</p>
+        </div>
+      </div>
+      <p class="cmp-out">O problema não é falta de uma ferramenta. É a falta de uma máquina previsível para transformar o conhecimento da empresa em conteúdo.</p>
+    </div>
+  </section>
+
+  <!-- ===== HOJE x PLATAFORMA ===== -->
+  <section>
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">A diferença</p>
+        <h2>Oito etapas para um post. Ou três.</h2>
+      </div>
+      <div class="cmp">
+        <div class="cmp-col">
+          <h3>Hoje <span class="num">8 etapas</span></h3>
+          <ul class="flow">
+            <li><span class="num">01</span> Ideia</li>
+            <li><span class="num">02</span> Prompt</li>
+            <li><span class="num">03</span> Ferramenta</li>
+            <li><span class="num">04</span> Editar</li>
+            <li><span class="num">05</span> Outra ferramenta</li>
+            <li><span class="num">06</span> Legenda</li>
+            <li><span class="num">07</span> Calendário</li>
+            <li><span class="num">08</span> Publicar</li>
+          </ul>
+          <p class="cmp-note">Cada troca de ferramenta é uma chance de parar no meio.</p>
+        </div>
+        <div class="cmp-mid" aria-hidden="true">VS</div>
+        <div class="cmp-col win">
+          <h3>Com a plataforma <span class="num">3 etapas</span></h3>
+          <ul class="flow">
+            <li><span class="num">01</span> Empresa</li>
+            <li><span class="num">02</span> IA</li>
+            <li><span class="num">03</span> Conteúdo pronto</li>
+          </ul>
+          <p class="cmp-note">Um lugar, um fluxo, tudo salvo junto.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMO FUNCIONA ===== -->
+  <section class="alt" id="como-funciona">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Como funciona</p>
+        <h2>Do conhecimento da sua empresa para conteúdo pronto.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="mono">Etapa 01</span>
+          <h3>Configure sua empresa</h3>
+          <p class="lede" style="font-size:14.5px">Você informa:</p>
+          <ul>
+            <li>o que vende</li>
+            <li>quem compra</li>
+            <li>seus diferenciais</li>
+            <li>seus serviços</li>
+            <li>sua identidade visual</li>
+            <li>como quer se comunicar</li>
+          </ul>
+          <p class="tailnote">Uma vez só. Depois é só usar.</p>
+        </div>
+        <div class="step">
+          <span class="mono">Etapa 02</span>
+          <h3>Diga o que quer comunicar</h3>
+          <p class="lede" style="font-size:14.5px">Escolha:</p>
+          <ul>
+            <li>objetivo</li>
+            <li>tema</li>
+            <li>formato</li>
+            <li>tom</li>
+          </ul>
+          <p class="tailnote">Ou simplesmente deixe a IA sugerir.</p>
+        </div>
+        <div class="step">
+          <span class="mono">Etapa 03</span>
+          <h3>Receba o conteúdo pronto</h3>
+          <p class="lede" style="font-size:14.5px">A plataforma cria:</p>
+          <ul>
+            <li>imagem</li>
+            <li>legenda</li>
+            <li>CTA</li>
+            <li>hashtags</li>
+            <li>estrutura do conteúdo</li>
+          </ul>
+          <p class="tailnote">Tudo alinhado à sua empresa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DEMONSTRAÇÃO ===== -->
+  <section id="demonstracao">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Demonstração</p>
+        <h2>Veja uma ideia virar conteúdo.</h2>
+      </div>
+      <div class="demo">
+        <div class="term">
+          <div class="term-row">
+            <span class="mono">Você escreve</span>
+            <p class="ask">"Quero divulgar meu serviço de limpeza de estofados."</p>
+          </div>
+          <div class="term-row">
+            <span class="mono">A plataforma processa</span>
+            <ul class="proc" id="proc">
+              <li class="done"><i class="tick" aria-hidden="true">✓</i> Entendendo sua empresa...</li>
+              <li class="done"><i class="tick" aria-hidden="true">✓</i> Definindo o ângulo...</li>
+              <li class="done"><i class="tick" aria-hidden="true">✓</i> Gerando conteúdo...</li>
+            </ul>
+          </div>
+          <div class="term-row">
+            <span class="mono">Contexto utilizado · Estofados Novo Lar</span>
+            <div class="ctx">
+              <span class="chip">Secagem em 4h</span>
+              <span class="chip">Produtos sem cheiro forte</span>
+              <span class="chip">Atende no local</span>
+            </div>
+          </div>
+          <div class="term-row">
+            <span class="mono">Resultado</span>
+            <div class="out">
+              <h4>Seu sofá pode estar mais sujo do que parece.</h4>
+              <p>Poeira, ácaro e resíduo de uso ficam no tecido mesmo quando a peça parece limpa. A higienização profissional remove o que o aspirador não alcança — e o estofado seca em cerca de 4 horas. Agende sua limpeza.</p>
+              <p class="tags">#limpezadeestofados #higienizacao #casalimpa</p>
+            </div>
+            <div class="cta-row" style="margin-top:6px">
+              <button class="btn btn-2 btn-sm" type="button" id="replay">Rodar a geração de novo</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 style="margin-bottom:12px">A imagem não é escolhida de um banco. É gerada com o mesmo contexto do texto.</h3>
+          <p class="lede" style="margin-bottom:18px">Por isso o post fala de secagem em 4 horas, e não de uma promessa genérica que qualquer concorrente poderia publicar.</p>
+          <div class="gen">
+            <div class="gen-bar">
+              <i class="pip" aria-hidden="true"></i>
+              <span class="mono">Saída da demonstração</span>
+            </div>
+            <div class="shot">
+              <span class="badge">Imagem gerada</span>
+              <h3>Seu sofá pode estar mais sujo do que parece.</h3>
+              <span class="sig">Fotografia limpa · luz natural</span>
+            </div>
+          </div>
+          <div class="cta-row" style="margin-top:18px">
+            <a class="btn btn-1" href="#precos">Criar meu primeiro conteúdo <span class="arrow" aria-hidden="true">➔</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXPERIMENTE ===== -->
+  <section class="alt" id="experimente">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Experimente</p>
+        <h2>Escolha três coisas e veja o formato do resultado.</h2>
+      </div>
+      <div class="lab">
+        <div class="lab-grid">
+          <div class="lab-controls">
+            <div class="pickset">
+              <span class="mono">Formato</span>
+              <div class="picks" id="p-formato" role="group" aria-label="Formato">
+                <button class="pick" type="button" data-v="post" aria-pressed="true">Post</button>
+                <button class="pick" type="button" data-v="carrossel" aria-pressed="false">Carrossel</button>
+                <button class="pick" type="button" data-v="story" aria-pressed="false">Story</button>
+              </div>
+            </div>
+            <div class="pickset">
+              <span class="mono">Tema</span>
+              <div class="picks" id="p-tema" role="group" aria-label="Tema">
+                <button class="pick" type="button" data-v="promo" aria-pressed="false">Promoção de inverno</button>
+                <button class="pick" type="button" data-v="dica" aria-pressed="true">Dica rápida</button>
+                <button class="pick" type="button" data-v="prova" aria-pressed="false">Prova social</button>
+                <button class="pick" type="button" data-v="lanc" aria-pressed="false">Lançamento</button>
+              </div>
+            </div>
+            <div class="pickset">
+              <span class="mono">Tom</span>
+              <div class="picks" id="p-tom" role="group" aria-label="Tom">
+                <button class="pick" type="button" data-v="premium" aria-pressed="false">Premium</button>
+                <button class="pick" type="button" data-v="proximo" aria-pressed="false">Próximo</button>
+                <button class="pick" type="button" data-v="direto" aria-pressed="true">Direto</button>
+              </div>
+            </div>
+          </div>
+          <div class="lab-out" aria-live="polite">
+            <span class="mono" id="out-label">Post · imagem + legenda</span>
+            <ul class="struct" id="out-struct"></ul>
+            <h4 id="out-title"></h4>
+            <p class="body" id="out-body"></p>
+            <p class="tags" id="out-tags"></p>
+          </div>
+        </div>
+        <div class="lab-foot">
+          <span class="mono">Exemplo demonstrativo, sem uso de créditos.</span>
+          <a class="btn btn-1 btn-sm" href="#precos">Gerar com os dados da minha empresa <span class="arrow" aria-hidden="true">➔</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PERSONALIZAÇÃO ===== -->
+  <section>
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Personalização</p>
+        <h2>Não é conteúdo genérico. É conteúdo da sua empresa.</h2>
+      </div>
+      <div class="g2">
+        <dl class="profile">
+          <div class="prow"><dt>Empresa</dt><dd>Estofados Novo Lar</dd></div>
+          <div class="prow"><dt>Segmento</dt><dd>Limpeza e higienização de estofados</dd></div>
+          <div class="prow"><dt>Público</dt><dd>Famílias e escritórios em Campinas e região</dd></div>
+          <div class="prow"><dt>Tom de voz</dt><dd>Direto, prestativo, sem exagero</dd></div>
+          <div class="prow"><dt>Tipografia</dt><dd>Sans-serif moderna</dd></div>
+          <div class="prow"><dt>Estilo de imagem</dt><dd>Fotografia limpa, ambiente real, luz natural</dd></div>
+          <div class="prow"><dt>Diferenciais</dt><dd>Secagem em 4h · Produtos sem cheiro forte · Atende no local</dd></div>
+          <div class="prow"><dt>Cores</dt><dd>
+            <div class="swatches">
+              <span class="sw"><i style="background:#0b0b0c"></i>#0b0b0c</span>
+              <span class="sw"><i style="background:#b4451e"></i>#b4451e</span>
+              <span class="sw"><i style="background:#f4f2ef"></i>#f4f2ef</span>
+            </div>
+          </dd></div>
+        </dl>
+        <div>
+          <h3 style="margin-bottom:10px">Sua marca continua sendo sua</h3>
+          <p class="lede" style="margin-bottom:20px">A IA não precisa inventar uma empresa nova toda vez que cria um post. Ela usa as informações e a identidade que você cadastrou para manter consistência entre um conteúdo e o próximo.</p>
+          <p class="mono" style="color:var(--ink-3);margin-bottom:11px">O que muda na prática</p>
+          <div class="beforeafter">
+            <div class="ba">
+              <div class="side old"><span class="mono">Antes</span><span class="txt">"Cuide bem do seu sofá!"</span></div>
+              <span class="sep" aria-hidden="true">➔</span>
+              <div class="side new"><span class="mono">Depois</span><span class="txt">"Secagem em 4 horas, sem cheiro forte, atendimento no local."</span></div>
+            </div>
+            <div class="ba">
+              <div class="side old"><span class="mono">Antes</span><span class="txt">"Aproveite essa oportunidade incrível!!!"</span></div>
+              <span class="sep" aria-hidden="true">➔</span>
+              <div class="side new"><span class="mono">Depois</span><span class="txt">"A agenda de sábado tem os últimos horários da semana."</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<style>
+/* ============ complementos ============ */
+.ba .side small{display:block;font-size:12.5px;color:var(--ink-3);line-height:1.35;margin-top:2px}
+.case-note{font-size:13px;color:var(--ink-3);margin-top:10px}
+.tools{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,34px);align-items:stretch}
+.tool-col{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:22px;display:grid;gap:13px;align-content:start}
+.tool-col.win{border-color:var(--terra);box-shadow:var(--lift)}
+.tool-col ul{margin:0;padding:0;display:grid;gap:7px}
+.tool-col li{list-style:none;font-size:14.5px;color:var(--ink-2);display:flex;gap:9px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule)}
+.tool-col li:last-child{border-bottom:none}
+.tool-col li::before{content:"—";color:var(--rule-2);flex:none}
+.tool-col.win li{color:var(--ink);font-weight:500}
+.tool-col.win li::before{content:"✓";color:var(--terra)}
+@media (max-width:720px){.tools{grid-template-columns:1fr}}
+</style>
+
+  <!-- ===== RECURSOS ===== -->
+  <section class="alt" id="recursos">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Recursos</p>
+        <h2>Tudo que a rotina de conteúdo exige, em um lugar.</h2>
+        <p class="lede">O diferencial não é gerar imagem. É contexto da empresa, estratégia, geração e organização no mesmo fluxo.</p>
+      </div>
+      <div class="g4">
+        <div class="tile"><span class="mono">01</span><h4>Geração de conteúdo</h4><p>Crie posts completos em poucos minutos.</p></div>
+        <div class="tile"><span class="mono">02</span><h4>Imagens com IA</h4><p>Crie imagens adaptadas ao contexto do seu conteúdo.</p></div>
+        <div class="tile"><span class="mono">03</span><h4>Legendas</h4><p>Textos estruturados para cada objetivo.</p></div>
+        <div class="tile"><span class="mono">04</span><h4>Calendário</h4><p>Organize o conteúdo da semana ou do mês.</p></div>
+        <div class="tile"><span class="mono">05</span><h4>Campanhas</h4><p>Crie sequências de conteúdos para promoções e lançamentos.</p></div>
+        <div class="tile"><span class="mono">06</span><h4>Biblioteca</h4><p>Tenha seus conteúdos e materiais organizados.</p></div>
+        <div class="tile"><span class="mono">07</span><h4>Identidade visual</h4><p>Mantenha sua marca consistente.</p></div>
+        <div class="tile"><span class="mono">08</span><h4>Reutilização</h4><p>Duplique e adapte conteúdos que funcionaram.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CASOS DE USO ===== -->
+  <section id="casos">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Casos de uso</p>
+        <h2>Funciona para diferentes tipos de negócio.</h2>
+        <p class="lede">O que muda não é a ferramenta — é o contexto que ela recebe.</p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Tipos de negócio">
+        <button class="tab" type="button" role="tab" aria-selected="true" aria-controls="c-local">Negócios locais</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="c-serv">Serviços</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="c-prof">Profissionais</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="c-ecom">E-commerce</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="c-social">Social Media</button>
+      </div>
+
+      <div class="case" id="c-local" role="tabpanel">
+        <div class="case-left">
+          <div>
+            <span class="mono" style="color:var(--terra)">Barbearia</span>
+            <h3 style="margin-top:8px">Quem vive de movimento na porta precisa aparecer toda semana.</h3>
+            <p class="lede" style="margin-top:10px">Conteúdo que mostra serviço, resultado e agenda aberta — sem depender de alguém para produzir.</p>
+          </div>
+          <div class="ask-box">
+            <span class="mono">O que a empresa pede</span>
+            <p>"Quero mostrar os cortes que estão saindo mais neste mês."</p>
+          </div>
+          <div>
+            <p class="mono" style="color:var(--ink-3);margin-bottom:9px">A plataforma devolve</p>
+            <ul class="deliver">
+              <li><span class="mono">Carrossel</span> Carrossel com os 3 cortes</li>
+              <li><span class="mono">Story</span> Story com enquete de preferência</li>
+              <li><span class="mono">Post</span> Post de agenda da semana</li>
+            </ul>
+          </div>
+          <div class="ba">
+            <div class="side old"><span class="mono">Antes</span><span class="txt">"Preciso postar alguma coisa hoje."</span><small>Decisão tomada em cima da hora, todos os dias.</small></div>
+            <span class="sep" aria-hidden="true">➔</span>
+            <div class="side new"><span class="mono">Depois</span><span class="txt">"Tenho 15 conteúdos prontos para a semana."</span><small>Revisar e publicar, em vez de começar do zero.</small></div>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="gen-bar"><i class="pip" aria-hidden="true"></i><span class="mono">Conteúdo educativo · pronto</span></div>
+          <div class="shot"><span class="badge">Imagem gerada</span><h3>3 cortes que estão em alta</h3><span class="sig">Carrossel · 5 telas</span></div>
+          <div class="gen-body">
+            <p>Nem todo corte combina com todo formato de rosto. Separamos os três mais pedidos do mês e para quem cada um funciona melhor. Passa pro lado e vê qual é a sua. Agende seu horário</p>
+            <p class="tags">#barbearia #corteMasculino #estilo</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case" id="c-serv" role="tabpanel" hidden>
+        <div class="case-left">
+          <div>
+            <span class="mono" style="color:var(--terra)">Higienização de estofados</span>
+            <h3 style="margin-top:8px">Serviço que ninguém procura todo dia precisa estar lembrado quando a hora chega.</h3>
+            <p class="lede" style="margin-top:10px">Conteúdo que explica o problema, mostra o processo e abre a agenda — no ritmo de quem contrata uma vez por ano.</p>
+          </div>
+          <div class="ask-box">
+            <span class="mono">O que a empresa pede</span>
+            <p>"Quero explicar por que a limpeza caseira não resolve."</p>
+          </div>
+          <div>
+            <p class="mono" style="color:var(--ink-3);margin-bottom:9px">A plataforma devolve</p>
+            <ul class="deliver">
+              <li><span class="mono">Post</span> Post educativo com os sinais de que o estofado precisa de limpeza</li>
+              <li><span class="mono">Carrossel</span> Carrossel com o processo passo a passo</li>
+              <li><span class="mono">Story</span> Story de antes e depois com sticker de agendamento</li>
+            </ul>
+          </div>
+          <div class="ba">
+            <div class="side old"><span class="mono">Antes</span><span class="txt">"Higienização de estofados com preço justo!"</span><small>Poderia ser de qualquer concorrente.</small></div>
+            <span class="sep" aria-hidden="true">➔</span>
+            <div class="side new"><span class="mono">Depois</span><span class="txt">"Seca em 4 horas, sem cheiro forte, feito na sua casa."</span><small>O diferencial cadastrado aparece no texto.</small></div>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="gen-bar"><i class="pip" aria-hidden="true"></i><span class="mono">Conteúdo educativo · pronto</span></div>
+          <div class="shot"><span class="badge">Imagem gerada</span><h3>O aspirador não alcança o que está no tecido.</h3><span class="sig">Post · imagem + legenda</span></div>
+          <div class="gen-body">
+            <p>A limpeza de superfície tira o que está à vista. Ácaro, poeira fina e resíduo de uso ficam nas camadas internas do tecido — e voltam a aparecer no cheiro e na mancha. Agende sua higienização.</p>
+            <p class="tags">#higienizacao #limpezadeestofados #casalimpa</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case" id="c-prof" role="tabpanel" hidden>
+        <div class="case-left">
+          <div>
+            <span class="mono" style="color:var(--terra)">Nutricionista</span>
+            <h3 style="margin-top:8px">Quem vende conhecimento precisa mostrar conhecimento — sem virar plantão de dúvidas.</h3>
+            <p class="lede" style="margin-top:10px">Conteúdo que constrói autoridade na sua área e conduz para a consulta, mantendo o mesmo tom em todas as publicações.</p>
+          </div>
+          <div class="ask-box">
+            <span class="mono">O que a empresa pede</span>
+            <p>"Quero desmentir as dietas da moda sem parecer arrogante."</p>
+          </div>
+          <div>
+            <p class="mono" style="color:var(--ink-3);margin-bottom:9px">A plataforma devolve</p>
+            <ul class="deliver">
+              <li><span class="mono">Carrossel</span> Carrossel com mito e fato lado a lado</li>
+              <li><span class="mono">Post</span> Post de autoridade sobre como funciona o atendimento</li>
+              <li><span class="mono">Story</span> Story com caixinha de perguntas e resposta gravada</li>
+            </ul>
+          </div>
+          <div class="ba">
+            <div class="side old"><span class="mono">Antes</span><span class="txt">"Alimente-se bem e viva melhor!"</span><small>Frase de calendário, não de especialista.</small></div>
+            <span class="sep" aria-hidden="true">➔</span>
+            <div class="side new"><span class="mono">Depois</span><span class="txt">"Cortar carboidrato não acelera resultado. Ajusta a quantidade, não o grupo."</span><small>Posicionamento claro, no tom cadastrado.</small></div>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="gen-bar"><i class="pip" aria-hidden="true"></i><span class="mono">Conteúdo de autoridade · pronto</span></div>
+          <div class="shot"><span class="badge">Imagem gerada</span><h3>Mito: carboidrato à noite engorda.</h3><span class="sig">Carrossel · mito e fato</span></div>
+          <div class="gen-body">
+            <p>O corpo não tem relógio para decidir o que virar gordura. O que pesa é o total do dia e a qualidade do que entra. Se você dorme melhor jantando arroz, jante arroz. Agende sua avaliação.</p>
+            <p class="tags">#nutricao #alimentacaosaudavel #mitosefatos</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case" id="c-ecom" role="tabpanel" hidden>
+        <div class="case-left">
+          <div>
+            <span class="mono" style="color:var(--terra)">Loja de decoração</span>
+            <h3 style="margin-top:8px">Catálogo grande não é problema de estoque. É problema de conteúdo.</h3>
+            <p class="lede" style="margin-top:10px">Cada produto merece contexto, e a plataforma cria a peça a partir da ficha que você já tem cadastrada.</p>
+          </div>
+          <div class="ask-box">
+            <span class="mono">O que a empresa pede</span>
+            <p>"Quero divulgar a coleção de outono sem repetir o mesmo post."</p>
+          </div>
+          <div>
+            <p class="mono" style="color:var(--ink-3);margin-bottom:9px">A plataforma devolve</p>
+            <ul class="deliver">
+              <li><span class="mono">Campanha</span> Sequência de 5 peças para o lançamento da coleção</li>
+              <li><span class="mono">Carrossel</span> Carrossel de combinações por ambiente</li>
+              <li><span class="mono">Post</span> Post de frete e prazo com a condição da semana</li>
+            </ul>
+          </div>
+          <div class="ba">
+            <div class="side old"><span class="mono">Antes</span><span class="txt">"Novidades na loja, corre ver!"</span><small>O mesmo post para cada produto novo.</small></div>
+            <span class="sep" aria-hidden="true">➔</span>
+            <div class="side new"><span class="mono">Depois</span><span class="txt">"Três formas de usar a manta de outono na mesma sala."</span><small>Conteúdo que mostra uso, não só o produto.</small></div>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="gen-bar"><i class="pip" aria-hidden="true"></i><span class="mono">Coleção de outono · pronto</span></div>
+          <div class="shot"><span class="badge">Imagem gerada</span><h3>A mesma sala, três climas diferentes.</h3><span class="sig">Carrossel · por ambiente</span></div>
+          <div class="gen-body">
+            <p>Trocar manta, almofada e luminária muda o ambiente sem mudar o móvel. Separamos três combinações da coleção de outono para sala pequena, média e integrada. Ver a coleção.</p>
+            <p class="tags">#decoracao #outono #casadecorada</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case" id="c-social" role="tabpanel" hidden>
+        <div class="case-left">
+          <div>
+            <span class="mono" style="color:var(--terra)">Social media e agências</span>
+            <h3 style="margin-top:8px">Cinco clientes, cinco tons de voz, um só lugar para produzir.</h3>
+            <p class="lede" style="margin-top:10px">Cada cliente tem o próprio perfil de empresa, com contexto, marca e calendário separados — sem misturar conteúdo entre contas.</p>
+          </div>
+          <div class="ask-box">
+            <span class="mono">O que a empresa pede</span>
+            <p>"Preciso entregar a semana de três clientes até sexta."</p>
+          </div>
+          <div>
+            <p class="mono" style="color:var(--ink-3);margin-bottom:9px">A plataforma devolve</p>
+            <ul class="deliver">
+              <li><span class="mono">Perfis</span> Um perfil de empresa por cliente, com marca própria</li>
+              <li><span class="mono">Calendário</span> Três semanas montadas, cada uma no tom do cliente</li>
+              <li><span class="mono">Biblioteca</span> Aprovações e conteúdos anteriores salvos por conta</li>
+            </ul>
+          </div>
+          <div class="ba">
+            <div class="side old"><span class="mono">Antes</span><span class="txt">"Sexta-feira produzindo a semana de todo mundo."</span><small>O gargalo está na produção, não na estratégia.</small></div>
+            <span class="sep" aria-hidden="true">➔</span>
+            <div class="side new"><span class="mono">Depois</span><span class="txt">"Sexta-feira revisando e enviando para aprovação."</span><small>O time volta a fazer o trabalho de estratégia.</small></div>
+          </div>
+        </div>
+        <div class="gen">
+          <div class="gen-bar"><i class="pip" aria-hidden="true"></i><span class="mono">3 perfis · semana completa</span></div>
+          <div class="shot"><span class="badge">Imagem gerada</span><h3>Cada cliente com o seu tom, na mesma sexta.</h3><span class="sig">Perfis separados · marca própria</span></div>
+          <div class="gen-body">
+            <p>O perfil de empresa guarda público, diferenciais, cores e tom de voz de cada conta. Ao trocar de cliente, o conteúdo troca de linguagem junto — sem precisar reescrever o briefing toda vez.</p>
+            <p class="tags">#socialmedia #agencia #gestaoderedes</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="case-note">Exemplos de saída da plataforma. As empresas citadas são fictícias, usadas para demonstrar o formato do resultado.</p>
+    </div>
+  </section>
+
+  <!-- ===== CALENDÁRIO ===== -->
+  <section class="alt" id="calendario">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Calendário</p>
+        <h2>Pare de decidir o que postar cinco minutos antes de postar.</h2>
+        <p class="lede">A semana montada com objetivo em cada dia — educar, provar, ofertar.</p>
+      </div>
+      <div class="week">
+        <div class="day">
+          <div class="day-top"><span class="dow">SEG</span><span class="goal">educativo</span></div>
+          <p>3 sinais de que seu estofado precisa de limpeza</p>
+          <span class="kind">Conteúdo educativo</span>
+        </div>
+        <div class="day">
+          <div class="day-top"><span class="dow">TER</span><span class="goal">autoridade</span></div>
+          <p>Como funciona nosso processo de higienização</p>
+          <span class="kind">Conteúdo de autoridade</span>
+        </div>
+        <div class="day">
+          <div class="day-top"><span class="dow">QUA</span><span class="goal">oferta</span></div>
+          <p>Sofá de 3 lugares com condição especial</p>
+          <span class="kind">Oferta</span>
+        </div>
+        <div class="day">
+          <div class="day-top"><span class="dow">QUI</span><span class="goal">prova</span></div>
+          <p>Antes e depois de um atendimento da semana</p>
+          <span class="kind">Prova social</span>
+        </div>
+        <div class="day">
+          <div class="day-top"><span class="dow">SEX</span><span class="goal">promocional</span></div>
+          <p>Agenda de sábado com últimos horários</p>
+          <span class="kind">Conteúdo promocional</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CAMPANHAS ===== -->
+  <section id="campanhas">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Campanhas</p>
+        <h2>Promoção não é um post. É uma sequência.</h2>
+        <p class="lede">Você escolhe o objetivo e a plataforma monta a sequência inteira, com papel definido para cada peça.</p>
+      </div>
+      <div class="camp-goal">
+        <span class="mono">Campanha · Semana do Cliente</span>
+        <p>"Aumentar agendamentos em uma semana promocional"</p>
+      </div>
+      <div class="camp">
+        <div class="camp-item"><span class="num">01</span><h4>Teaser</h4><p>Algo bom vem aí — gera expectativa sem revelar a oferta.</p></div>
+        <div class="camp-item"><span class="num">02</span><h4>Conteúdo educativo</h4><p>Por que fazer isso agora — ensina antes de vender e prepara o terreno.</p></div>
+        <div class="camp-item"><span class="num">03</span><h4>Oferta</h4><p>A condição da semana — comunica a oferta com clareza e prazo.</p></div>
+        <div class="camp-item"><span class="num">04</span><h4>Prova social</h4><p>Quem já contratou — reduz a insegurança de quem está em dúvida.</p></div>
+        <div class="camp-item"><span class="num">05</span><h4>Última chamada</h4><p>Termina hoje — fecha a campanha com urgência real.</p></div>
+      </div>
+      <div class="cta-row" style="margin-top:20px">
+        <a class="btn btn-1" href="#precos">Criar campanha <span class="arrow" aria-hidden="true">➔</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ANTES DE ASSINAR ===== -->
+  <section class="alt">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Antes de assinar</p>
+        <h2>Quantas ferramentas você usaria para fazer isso separado?</h2>
+        <p class="lede">A conta raramente é só de dinheiro — é de tempo, de troca de contexto e de coisa que fica pela metade.</p>
+      </div>
+      <div class="tools">
+        <div class="tool-col">
+          <h3>Ferramentas separadas</h3>
+          <ul>
+            <li>Ferramenta de design</li>
+            <li>Ferramenta de copy</li>
+            <li>Planejamento</li>
+            <li>Calendário</li>
+            <li>IA de imagem</li>
+            <li>Organização dos arquivos</li>
+          </ul>
+          <p class="cmp-note">Seis lugares para abrir, aprender e manter.</p>
+        </div>
+        <div class="cmp-mid" aria-hidden="true">VS</div>
+        <div class="tool-col win">
+          <h3>Uma plataforma</h3>
+          <ul>
+            <li>Contexto da empresa</li>
+            <li>Estratégia de conteúdo</li>
+            <li>Geração de imagem e texto</li>
+            <li>Calendário e campanhas</li>
+            <li>Biblioteca com tudo salvo</li>
+          </ul>
+          <p class="cmp-note">Um lugar, um fluxo, tudo salvo junto.</p>
+        </div>
+      </div>
+      <p class="cmp-out">Menos ferramentas. Menos trabalho manual. Mais consistência.</p>
+    </div>
+  </section>
+
+  <!-- ===== PREÇO ===== -->
+  <section id="precos">
+    <div class="shell">
+      <div class="price-wrap">
+        <div>
+          <p class="mono eyebrow">Preço</p>
+          <h2 style="margin-bottom:16px">Comece sem compromisso.</h2>
+          <p class="lede" style="margin-bottom:18px">Um plano só, com tudo incluído. Sete dias para testar antes de pagar qualquer coisa.</p>
+          <div class="trust" style="border-top:none;padding-top:0;margin-top:0">
+            <span><i class="dot" aria-hidden="true"></i> Sem multa</span>
+            <span><i class="dot" aria-hidden="true"></i> Sem fidelidade</span>
+            <span><i class="dot" aria-hidden="true"></i> Cancelamento na própria plataforma</span>
+          </div>
+        </div>
+        <div class="price">
+          <div class="price-top">
+            <span class="plan">Plano Pro</span>
+            <span class="free">7 dias grátis</span>
+          </div>
+          <div class="amount">
+            <span class="val">R$ 97</span>
+            <span class="per">/mês</span>
+          </div>
+          <ul class="incl">
+            <li>Conteúdo com IA</li>
+            <li>Geração de imagens</li>
+            <li>Legendas</li>
+            <li>Calendário</li>
+            <li>Campanhas</li>
+            <li>Biblioteca</li>
+            <li>Identidade visual</li>
+            <li>Conteúdos para sua empresa</li>
+          </ul>
+          <a class="btn btn-1" href="#entrar">Começar grátis <span class="arrow" aria-hidden="true">➔</span></a>
+          <p class="fineprint" style="margin-top:0">Cancele quando quiser. Depois do período de teste, R$ 97/mês. Sem multa e sem fidelidade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<style>
+/* ============ entrar ============ */
+.login-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,404px);gap:clamp(22px,3.6vw,44px);align-items:center}
+.login{background:var(--card);border:1px solid var(--rule);border-radius:8px;box-shadow:var(--lift-2);padding:clamp(20px,2.5vw,28px);display:grid;gap:16px}
+.login h3{font-size:22px}
+.login .fields{display:grid;gap:13px}
+.login .field{display:grid;gap:6px}
+.login .field-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.login label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.login .field-row a{font-size:12.5px;color:var(--terra)}
+.login .field-row a:hover{text-decoration:underline}
+.login input[type=email],.login input[type=password]{
+  width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--bone);
+  border:1px solid var(--rule);border-radius:4px;padding:11px 12px;transition:border-color .16s,background .16s;
+}
+.login input::placeholder{color:var(--ink-3)}
+.login input:focus{outline:none;border-color:var(--terra);background:var(--card)}
+.login input[aria-invalid="true"]{border-color:var(--terra)}
+.login .keep{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink-2);cursor:pointer;font-family:inherit;letter-spacing:0;text-transform:none}
+.login .keep input{accent-color:var(--terra);width:15px;height:15px;margin:0}
+.login .btn{justify-content:center}
+.login .status{font-size:13px;color:var(--terra);min-height:1.1em;margin:0}
+.login .note{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);border-top:1px solid var(--rule);padding-top:13px}
+@media (max-width:1060px){.login-wrap{grid-template-columns:1fr}}
+</style>
+
+  <!-- ===== TESTE DE 7 DIAS ===== -->
+  <section class="alt" id="teste">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Teste de 7 dias</p>
+        <h2>7 dias para descobrir se funciona para você.</h2>
+        <p class="lede">Não é um passeio pela interface. É tempo suficiente para sair com uma rotina de conteúdo montada.</p>
+      </div>
+      <div class="trail">
+        <div class="stop">
+          <span class="mono">Dia 1</span>
+          <p>Configure sua empresa</p>
+          <div class="bar" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="stop">
+          <span class="mono">Dia 2</span>
+          <p>Crie seu primeiro conteúdo</p>
+          <div class="bar" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="stop">
+          <span class="mono">Dia 3</span>
+          <p>Monte sua primeira semana</p>
+          <div class="bar" aria-hidden="true"><i></i></div>
+        </div>
+        <div class="stop">
+          <span class="mono">Dia 7</span>
+          <p>Tenha uma rotina de conteúdo pronta</p>
+          <div class="bar" aria-hidden="true"><i></i></div>
+        </div>
+      </div>
+      <div class="cta-row" style="margin-top:22px">
+        <a class="btn btn-1" href="#entrar">Começar meu teste grátis <span class="arrow" aria-hidden="true">➔</span></a>
+        <span class="fineprint" style="margin-top:0">R$ 97/mês depois do período de teste.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OBJEÇÕES ===== -->
+  <section>
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Dúvidas honestas</p>
+        <h2>As quatro objeções que aparecem primeiro.</h2>
+        <p class="lede">Respondidas sem rodeio.</p>
+      </div>
+      <div class="objections">
+        <div class="obj">
+          <p class="q">"Não sei usar IA."</p>
+          <p>Você não precisa saber escrever prompts.</p>
+        </div>
+        <div class="obj">
+          <p class="q">"Meu negócio é específico."</p>
+          <p>Você fornece as informações da sua empresa e a IA utiliza esse contexto.</p>
+        </div>
+        <div class="obj">
+          <p class="q">"Não sou designer."</p>
+          <p>A ferramenta foi pensada para você criar conteúdo sem precisar dominar design.</p>
+        </div>
+        <div class="obj">
+          <p class="q">"Não tenho tempo."</p>
+          <p>O objetivo é justamente reduzir o tempo gasto criando conteúdo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="alt" id="faq">
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">FAQ</p>
+        <h2>Perguntas frequentes</h2>
+        <p class="lede">Se ficar alguma dúvida, fale com a gente antes de assinar: <a href="mailto:contato@publica.com.br" style="color:var(--terra)">contato@publica.com.br</a></p>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>Preciso saber usar IA?</summary>
+          <p class="ans">Não. Você não escreve prompts. Você responde perguntas sobre a sua empresa — o que vende, para quem, como quer se comunicar — e a plataforma cuida do resto.</p>
+        </details>
+        <details>
+          <summary>Como funciona o teste grátis?</summary>
+          <p class="ans">Você cria sua conta, configura sua empresa e usa a plataforma por 7 dias. É tempo suficiente para configurar sua marca, gerar conteúdos e montar sua primeira semana de publicações.</p>
+        </details>
+        <details>
+          <summary>O que acontece depois dos 7 dias?</summary>
+          <p class="ans">Se quiser continuar, a assinatura passa a ser de R$ 97 por mês. Se não quiser, basta não continuar — sem multa e sem processo de cancelamento complicado.</p>
+        </details>
+        <details>
+          <summary>Posso cancelar?</summary>
+          <p class="ans">Sim, quando quiser, direto na plataforma. O acesso permanece ativo até o fim do período já pago.</p>
+        </details>
+        <details>
+          <summary>A IA cria as imagens?</summary>
+          <p class="ans">Sim. As imagens são geradas a partir do contexto do conteúdo e das informações da sua empresa, para não ficarem descoladas do que o texto está dizendo.</p>
+        </details>
+        <details>
+          <summary>Posso usar minha identidade visual?</summary>
+          <p class="ans">Sim. Você cadastra logo, cores, tipografia, estilo e tom de voz. Esses dados são usados na geração para manter consistência entre os conteúdos.</p>
+        </details>
+        <details>
+          <summary>Posso criar conteúdo para várias empresas?</summary>
+          <p class="ans">Sim. É possível manter mais de um perfil de empresa, cada um com o próprio contexto, marca e calendário — útil para social medias e agências.</p>
+        </details>
+        <details>
+          <summary>Posso baixar os conteúdos?</summary>
+          <p class="ans">Sim. Imagens e textos podem ser baixados para publicar onde você quiser, dentro do seu próprio fluxo.</p>
+        </details>
+        <details>
+          <summary>Posso usar os conteúdos comercialmente?</summary>
+          <p class="ans">Sim. Os conteúdos que você gera são para uso da sua empresa ou dos seus clientes, dentro dos termos de uso da plataforma.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== POSICIONAMENTO ===== -->
+  <section>
+    <div class="shell">
+      <div class="sec-head">
+        <p class="mono eyebrow">Posicionamento</p>
+        <h2>Feito para empresas que querem parar de improvisar o próprio conteúdo.</h2>
+        <p class="lede">A plataforma está em validação com as primeiras empresas. Em vez de inventar números e depoimentos, preferimos te mostrar o produto funcionando.</p>
+      </div>
+      <div class="pos-list">
+        <div class="pos-item"><span class="num">01</span><p>3 sinais de que seu estofado precisa de limpeza</p><span class="kind">Conteúdo educativo</span></div>
+        <div class="pos-item"><span class="num">02</span><p>Como funciona nosso processo de higienização</p><span class="kind">Conteúdo de autoridade</span></div>
+        <div class="pos-item"><span class="num">03</span><p>Sofá de 3 lugares com condição especial</p><span class="kind">Oferta</span></div>
+        <div class="pos-item"><span class="num">04</span><p>Antes e depois de um atendimento da semana</p><span class="kind">Prova social</span></div>
+        <div class="pos-item"><span class="num">05</span><p>Agenda de sábado com últimos horários</p><span class="kind">Conteúdo promocional</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ENTRAR ===== -->
+  <section class="alt" id="entrar">
+    <div class="shell login-wrap">
+      <div>
+        <p class="mono eyebrow">Acesso</p>
+        <h2 style="margin-bottom:16px">Acesse seu painel de conteúdo.</h2>
+        <p class="lede" style="margin-bottom:18px">Retome o controle da sua presença digital: contexto da empresa, geração, calendário e biblioteca no mesmo lugar.</p>
+        <div class="trust" style="border-top:none;padding-top:0;margin-top:0">
+          <span><i class="dot" aria-hidden="true"></i> Primeiro acesso configura a empresa</span>
+          <span><i class="dot" aria-hidden="true"></i> 7 dias grátis</span>
+        </div>
+      </div>
+      <form class="login" id="form-entrar" novalidate>
+        <div>
+          <h3>Entrar na plataforma</h3>
+          <p style="font-size:14px;color:var(--ink-2);margin-top:5px">Ainda não tem conta? <a href="#precos" style="color:var(--terra)">Criar conta</a></p>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <div class="field-row"><label for="email">E-mail</label></div>
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="username" placeholder="nome@suaempresa.com.br" required>
+          </div>
+          <div class="field">
+            <div class="field-row">
+              <label for="senha">Senha</label>
+              <a href="#recuperar">Esqueci minha senha</a>
+            </div>
+            <input id="senha" name="senha" type="password" autocomplete="current-password" placeholder="••••••••" required>
+          </div>
+          <label class="keep"><input type="checkbox" checked> Manter sessão ativa neste dispositivo</label>
+        </div>
+        <button class="btn btn-1" type="submit">Entrar <span class="arrow" aria-hidden="true">➔</span></button>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+        <p class="note">Pré-visualização de interface — os campos não enviam dados.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== CTA FINAL ===== -->
+  <section class="final">
+    <div class="shell">
+      <p class="mono eyebrow">Comece agora</p>
+      <h2 style="margin-bottom:16px">Seu próximo mês de conteúdo pode começar hoje.</h2>
+      <p class="lede" style="margin-bottom:26px">Configure sua empresa, gere seu primeiro conteúdo e veja quanto tempo você consegue economizar.</p>
+      <div class="cta-row">
+        <a class="btn btn-1" href="#entrar">Começar grátis por 7 dias <span class="arrow" aria-hidden="true">➔</span></a>
+        <a class="btn btn-2" href="#como-funciona">Ver como funciona</a>
+      </div>
+      <p class="fineprint">R$ 97/mês após o período de teste. Cancele quando quiser.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top">
+          <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="13" height="13" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 8v10a3 3 0 0 1-3 3H7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="9.5" cy="9.5" r="2.2" fill="currentColor"/>
+          </svg>
+          Publica
+        </a>
+        <p>Uma máquina de conteúdo para sua empresa: contexto, estratégia, geração e organização no mesmo lugar.</p>
+        <a class="btn btn-1 btn-sm" href="#entrar" style="justify-self:start">Começar grátis</a>
+        <div class="social">
+          <a href="#instagram">Instagram</a>
+          <a href="#linkedin">LinkedIn</a>
+          <a href="#youtube">YouTube</a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <span class="mono">Produto</span>
+        <a href="#produto">Produto</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#demonstracao">Demonstração</a>
+        <a href="#casos">Casos de uso</a>
+      </div>
+      <div class="foot-col">
+        <span class="mono">Recursos</span>
+        <a href="#recursos">Recursos</a>
+        <a href="#calendario">Calendário</a>
+        <a href="#campanhas">Campanhas</a>
+        <a href="#recursos">Identidade visual</a>
+      </div>
+      <div class="foot-col">
+        <span class="mono">Começar</span>
+        <a href="#precos">Preços</a>
+        <a href="#teste">Teste de 7 dias</a>
+        <a href="#faq">FAQ</a>
+        <a href="#entrar">Criar conta</a>
+      </div>
+      <div class="foot-col">
+        <span class="mono">Empresa</span>
+        <a href="#termos">Termos de uso</a>
+        <a href="#privacidade">Privacidade</a>
+        <a href="mailto:contato@publica.com.br">Contato</a>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <span>© 2026 Publica. Todos os direitos reservados.</span>
+      <span class="mono">R$ 97/mês · 7 dias grátis</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---------- abas de casos de uso ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){
+        var painel = document.getElementById(t.getAttribute('aria-controls'));
+        var ativo = (t === tab);
+        t.setAttribute('aria-selected', ativo ? 'true' : 'false');
+        if (painel) painel.hidden = !ativo;
+      });
+    });
+  });
+
+  /* ---------- experimente: formato + tema + tom ---------- */
+  var FORMATOS = {
+    post: {
+      label: 'Post · imagem + legenda',
+      struct: ['Imagem única', 'Legenda com CTA', '5 hashtags']
+    },
+    carrossel: {
+      label: 'Carrossel · 5 telas + legenda',
+      struct: ['Capa com o gancho', '3 telas de conteúdo', 'Tela final com CTA', 'Legenda e hashtags']
+    },
+    story: {
+      label: 'Story · 3 telas + enquete',
+      struct: ['Tela 1 — gancho', 'Tela 2 — conteúdo', 'Tela 3 — enquete e link', 'Sticker de agendamento']
+    }
+  };
+
+  var TEMAS = {
+    promo: {
+      titulo: 'A condição de inverno vai até sábado.',
+      tags: '#higienizacao #promocao #casalimpa',
+      tom: {
+        premium: 'A higienização de inverno está com condição especial até sábado. Secagem em cerca de 4 horas, produtos sem cheiro forte e atendimento no local. Agende pelo direct.',
+        proximo: 'Chegou o frio e o sofá virou o lugar favorito da casa — vale deixar ele limpo. Até sábado a higienização está com condição especial. Manda um direct que a gente agenda.',
+        direto: 'Higienização de estofados com condição especial até sábado. Seca em 4h. Sem cheiro forte. Atendemos no local. Agende pelo direct.'
+      }
+    },
+    dica: {
+      titulo: '3 sinais de que seu estofado precisa de limpeza.',
+      tags: '#limpezadeestofados #dicasdecasa #higienizacao',
+      tom: {
+        premium: 'Marcas que não saem com pano úmido, cheiro que volta depois de fechar a sala e tecido mais escuro nas áreas de uso. São os três sinais mais comuns de que a limpeza superficial já não resolve.',
+        proximo: 'Sabe quando você limpa e parece que não mudou nada? Normalmente é um destes três sinais: mancha que não sai, cheiro que volta e o assento mais escuro que o resto.',
+        direto: 'Mancha que não sai. Cheiro que volta. Tecido escurecido no assento. Três sinais de que o estofado precisa de higienização profissional.'
+      }
+    },
+    prova: {
+      titulo: 'Antes e depois de um atendimento desta semana.',
+      tags: '#antesedepois #provasocial #limpezadeestofados',
+      tom: {
+        premium: 'Sofá de três lugares em tecido claro, com quatro anos de uso. Higienização completa, secagem em cerca de 4 horas e a família usando a sala no mesmo dia.',
+        proximo: 'Esse sofá tem quatro anos de uso e voltou a parecer novo. Higienizamos pela manhã e a família já estava usando a sala à noite.',
+        direto: 'Sofá de 3 lugares, 4 anos de uso. Higienização completa. Seco em 4 horas. Sala liberada no mesmo dia.'
+      }
+    },
+    lanc: {
+      titulo: 'Agora também higienizamos colchões.',
+      tags: '#novoservico #colchao #higienizacao',
+      tom: {
+        premium: 'O mesmo processo do estofado, aplicado ao colchão: remoção de ácaro e resíduo, produtos sem cheiro forte e secagem em cerca de 4 horas, no seu endereço.',
+        proximo: 'Novidade: agora a gente também higieniza colchão. Mesmo processo do sofá, mesma secagem rápida, tudo feito na sua casa.',
+        direto: 'Novo serviço: higienização de colchões. Remoção de ácaro e resíduo. Seca em 4h. Atendemos no local.'
+      }
+    }
+  };
+
+  var escolha = { formato:'post', tema:'dica', tom:'direto' };
+  var outLabel  = document.getElementById('out-label');
+  var outStruct = document.getElementById('out-struct');
+  var outTitle  = document.getElementById('out-title');
+  var outBody   = document.getElementById('out-body');
+  var outTags   = document.getElementById('out-tags');
+
+  function render(){
+    var f = FORMATOS[escolha.formato];
+    var t = TEMAS[escolha.tema];
+    outLabel.textContent = f.label;
+    outStruct.innerHTML = '';
+    f.struct.forEach(function(item){
+      var li = document.createElement('li');
+      li.textContent = item;
+      outStruct.appendChild(li);
+    });
+    outTitle.textContent = t.titulo;
+    outBody.textContent = t.tom[escolha.tom];
+    outTags.textContent = t.tags;
+  }
+
+  [['p-formato','formato'],['p-tema','tema'],['p-tom','tom']].forEach(function(par){
+    var grupo = document.getElementById(par[0]);
+    if (!grupo) return;
+    var botoes = Array.prototype.slice.call(grupo.querySelectorAll('.pick'));
+    botoes.forEach(function(b){
+      b.addEventListener('click', function(){
+        botoes.forEach(function(o){ o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        escolha[par[1]] = b.getAttribute('data-v');
+        render();
+      });
+    });
+  });
+  render();
+
+  /* ---------- demonstração: rodar a sequência de novo ---------- */
+  var replay = document.getElementById('replay');
+  var passos = Array.prototype.slice.call(document.querySelectorAll('#proc li'));
+  var rodando = false;
+  if (replay) {
+    replay.addEventListener('click', function(){
+      if (rodando) return;
+      rodando = true;
+      replay.disabled = true;
+      passos.forEach(function(p){ p.classList.remove('done'); });
+      passos.forEach(function(p, i){
+        window.setTimeout(function(){
+          p.classList.add('done');
+          if (i === passos.length - 1) { rodando = false; replay.disabled = false; }
+        }, 520 * (i + 1));
+      });
+    });
+  }
+
+  /* ---------- entrar: validação local, nada é enviado ---------- */
+  var form = document.getElementById('form-entrar');
+  var email = document.getElementById('email');
+  var senha = document.getElementById('senha');
+  var status = document.getElementById('status');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim());
+    var senhaOk = senha.value.length >= 6;
+    email.setAttribute('aria-invalid', emailOk ? 'false' : 'true');
+    senha.setAttribute('aria-invalid', senhaOk ? 'false' : 'true');
+
+    if (!emailOk) { status.textContent = 'Informe um e-mail válido, como nome@suaempresa.com.br.'; email.focus(); return; }
+    if (!senhaOk) { status.textContent = 'A senha tem no mínimo 6 caracteres.'; senha.focus(); return; }
+    status.textContent = 'Esta é uma pré-visualização da interface — nenhum dado foi enviado.';
+  });
+
+  [email, senha].forEach(function(campo){
+    campo.addEventListener('input', function(){
+      campo.setAttribute('aria-invalid','false');
+      status.textContent = '';
+    });
+  });
+})();
+</script>
+</body>
+</html>
