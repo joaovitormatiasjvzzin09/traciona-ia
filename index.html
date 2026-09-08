@@ -137,6 +137,41 @@ section.alt{background:var(--bone-2)}
 .nav-act .entrar{font-size:14.5px;color:var(--ink-2);padding:6px 4px}
 .nav-act .entrar:hover{color:var(--ink)}
 
+/* ============ menu mobile ============ */
+.nav-burger{
+  display:none;align-items:center;justify-content:center;flex:none;
+  width:44px;height:44px;margin-right:-10px;
+  background:none;border:0;padding:0;cursor:pointer;color:var(--ink);
+}
+.nav-burger .bars{position:relative;display:block;width:18px;height:12px}
+.nav-burger .bars i{
+  position:absolute;left:0;width:100%;height:1.5px;background:currentColor;border-radius:2px;
+  transition:transform .18s,opacity .12s;
+}
+.nav-burger .bars i:nth-child(1){top:0}
+.nav-burger .bars i:nth-child(2){top:5.25px}
+.nav-burger .bars i:nth-child(3){top:10.5px}
+.nav-burger[aria-expanded="true"] .bars i:nth-child(1){transform:translateY(5.25px) rotate(45deg)}
+.nav-burger[aria-expanded="true"] .bars i:nth-child(2){opacity:0}
+.nav-burger[aria-expanded="true"] .bars i:nth-child(3){transform:translateY(-5.25px) rotate(-45deg)}
+
+.nav-menu{
+  position:absolute;top:100%;left:0;right:0;
+  background:var(--bone);border-bottom:1px solid var(--rule);box-shadow:var(--lift);
+  max-height:calc(100vh - 60px);max-height:calc(100dvh - 60px);overflow-y:auto;
+  animation:menu-in .16s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes menu-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.nav-menu .shell{display:grid;padding-top:4px;padding-bottom:18px}
+.nav-menu-links{display:grid}
+.nav-menu-links a{
+  display:flex;align-items:center;min-height:46px;
+  font-size:16px;color:var(--ink-2);border-bottom:1px solid var(--rule);
+}
+.nav-menu-links a:last-child{border-bottom:none}
+.nav-menu-links a:hover{color:var(--ink)}
+.nav-menu .btn{justify-content:center;margin-top:16px}
+
 /* ============ hero ============ */
 .hero{border-top:none;padding-top:clamp(46px,6.5vw,84px)}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(320px,430px);gap:clamp(30px,4.6vw,64px);align-items:start}
@@ -415,6 +450,8 @@ footer{background:var(--ink);color:var(--bone);padding:clamp(40px,5vw,64px) 0 26
 /* ============ responsivo ============ */
 @media (max-width:1060px){
   .nav-links{display:none}
+  .nav-burger{display:inline-flex}
+  .nav-act .entrar{display:none}
   .hero-grid,.demo,.case,.price-wrap,.lab-grid{grid-template-columns:1fr}
   .lab-out{border-left:none;border-top:1px solid var(--rule)}
   .g4{grid-template-columns:repeat(2,1fr)}
@@ -462,6 +499,23 @@ footer{background:var(--ink);color:var(--bone);padding:clamp(40px,5vw,64px) 0 26
     <div class="nav-act">
       <a class="entrar" href="#entrar">Entrar</a>
       <a class="btn btn-1 btn-sm" href="#precos">Começar grátis</a>
+      <button class="nav-burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile">
+        <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav-menu" id="menu-mobile" hidden>
+    <div class="shell">
+      <div class="nav-menu-links">
+        <a href="#produto">Produto</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#recursos">Recursos</a>
+        <a href="#precos">Preços</a>
+        <a href="#faq">FAQ</a>
+        <a href="#entrar">Entrar</a>
+      </div>
+      <a class="btn btn-1" href="#precos">Começar grátis por 7 dias</a>
     </div>
   </div>
 </nav>
@@ -1481,6 +1535,41 @@ footer{background:var(--ink);color:var(--bone);padding:clamp(40px,5vw,64px) 0 26
 
 <script>
 (function(){
+  /* ---------- menu mobile ---------- */
+  var burger = document.querySelector('.nav-burger');
+  var menu = document.getElementById('menu-mobile');
+  if (burger && menu) {
+    var alternaMenu = function(aberto){
+      burger.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+      burger.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+      menu.hidden = !aberto;
+    };
+
+    burger.addEventListener('click', function(){
+      alternaMenu(burger.getAttribute('aria-expanded') !== 'true');
+    });
+
+    /* fecha ao escolher um destino */
+    menu.addEventListener('click', function(e){
+      if (e.target.closest('a')) alternaMenu(false);
+    });
+
+    /* fecha com Esc, devolvendo o foco ao botão */
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && !menu.hidden) { alternaMenu(false); burger.focus(); }
+    });
+
+    /* fecha ao tocar fora */
+    document.addEventListener('click', function(e){
+      if (!menu.hidden && !menu.contains(e.target) && !burger.contains(e.target)) alternaMenu(false);
+    });
+
+    /* fecha se a janela voltar para o layout de desktop */
+    window.addEventListener('resize', function(){
+      if (window.innerWidth > 1060 && !menu.hidden) alternaMenu(false);
+    });
+  }
+
   /* ---------- abas de casos de uso ---------- */
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
   tabs.forEach(function(tab){
