@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T00:52:13.027444+00:00",
+  "generated_at": "2026-09-12T22:19:16.103942+00:00",
   "files": [
     {
       "path": "landing-motriz.html",
@@ -7,7 +7,11 @@
     },
     {
       "path": "index.html",
-      "bytes": 91168
+      "bytes": 106209
+    },
+    {
+      "path": ".lovasiri/sync.json",
+      "bytes": 80
     }
   ],
   "dependencies": []
